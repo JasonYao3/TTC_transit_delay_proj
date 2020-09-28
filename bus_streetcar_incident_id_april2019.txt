@@ -1,0 +1,41 @@
+Incident ID only has record on 2019-04-01 - 2019-04-30
+
+BUS
+*** Incident for Incident ID 9 is always missing, maybe there is something going on! 
+
+Incident ID:
+1: Mechanical
+2:
+3: Diversion
+4: Utilized Off Route
+5: Investigation
+6: Emergency Services
+7:
+8: General Delay
+9: Recorded in () times, looking at the Bus incident count plot. It could be Late Leaving Garage or Diversion.
+10: Late Leaving Garage - Operator
+11: Late Leaving Garage - Mechanical
+12: Late Leaving Garage - Management
+13: 
+
+* There are 13 different types of incident
+* Theses are not included:
+vision
+Late Leaving Garage
+Late Leaving Garage - Vision
+management 
+
+----------------------------------------
+Street Car
+*** No record is missing, safe to assume the Incident ID column provides no extra info.
+
+
+Incident ID:
+1: Mechanical
+4: Utilized Off Route
+5: Investigation
+6: Emergency Services
+7: Held By
+8: General Delay
+9: Late Leaving Garage
+10: Overhead - Pantograph
