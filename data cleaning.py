@@ -184,6 +184,93 @@ subway_df['report_day'] = subway_df['Date'].apply(lambda x: int(x.split('-')[2])
 subway_df['time_hour'] = subway_df['Time'].apply(lambda x: int(x.split(':')[0]))
 subway_df['time_min'] = subway_df['Time'].apply(lambda x: int(x.split(':')[1]))
 
+# Station
+station_list = ['BATHURST',
+'BAY',
+'BAYVIEW',
+'BESSARION',
+'BLOOR',
+'BROADVIEW',
+'CASTLE FRANK',
+'CHESTER',
+'CHRISTIE',
+'COLLEGE',
+'COXWELL',
+'DAVISVILLE',
+'DON MILLS',
+'DONLANDS',
+'DOWNSVIEW PARK',
+'DUFFERIN',
+'DUNDAS',
+'DUNDAS WEST',
+'DUPONT',
+'EGLINTON',
+'EGLINTON WEST',
+'ELLESMERE',
+'FINCH',
+'FINCH WEST',
+'GLENCAIRN',
+'GREENWOOD',
+'HIGH PARK',
+'HIGHWAY 407',
+'HWY 407'
+'ISLINGTON',
+'JANE',
+'KEELE',
+'KENNEDY',
+'KING',
+'KIPLING',
+'LANSDOWNE',
+'LAWRENCE',
+'LAWRENCE EAST',
+'LAWRENCE WEST',
+'LESLIE',
+'MAIN STREET',
+'MCCOWAN',
+'MIDLAND',
+'MUSEUM',
+'NORTH YORK CENTRE',
+'OLD MILL',
+'OSGOODE',
+'OSSINGTON',
+'PAPE',
+'PIONEER VILLAGE',
+'QUEEN',
+"QUEEN'S PARK",
+'ROSEDALE',
+'ROYAL YORK',
+'RUNNYMEDE',
+'SCARBOROUGH CENTRE',
+'SHEPPARD WEST',
+'SHEPPARD',
+'SHERBOURNE',
+'SPADINA',
+'ST. CLAIR',
+'ST. CLAIR WEST',
+'ST. ANDREW',
+'ST. GEORGE',
+'ST. PATRICK',
+'SUMMERHILL',
+'UNION',
+'VAUGHAN METRO CENTRE',
+'VICTORIA PARK',
+'WARDEN',
+'WELLESLEY',
+'WILSON',
+'WOODBINE',
+'YORK MILLS',
+'YORK UNIVERSITY',
+'YORKDALE',
+'YONGE',
+]
+# create regex pattern out of the list of words
+station_list_comb = '|'.join(station_list)
+subway_df = subway_df[subway_df['Station'].str.contains(station_list_comb)]
+
+subway_df['Station'] = subway_df['Station'].replace(to_replace='STN', value='STATION',regex=True)
+subway_df['Station'] = subway_df['Station'].apply(lambda x: x.split('(')[0] if '(' in x else x)
+subway_df['Station'] = subway_df['Station'].str.replace(rf'[{punctuation}]', '')
+
 # parse station
 subway_df['is_station'] = subway_df['Station'].apply(lambda x: 1 if 'STATION' in x else 0)
 
