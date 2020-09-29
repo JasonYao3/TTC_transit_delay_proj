@@ -7,6 +7,7 @@ Created on Mon Sep 28 12:20:11 2020
 
 import pandas as pd
 import numpy as np
+from string import punctuation
 
 bus_df = pd.read_csv('./data/merged_bus.csv', encoding='Latin-1')
 streetcar_df = pd.read_csv('./data/merged_streetcar.csv', encoding='Latin-1')
@@ -19,8 +20,6 @@ missing_vals_bus = bus_df.isnull().sum() / bus_df.shape[0]
 missing_vals_bus[missing_vals_bus > 0].sort_values(ascending=False)
 
 # Report Date column: Split year, month and day into 3 columns by "-"
-
-
 
 bus_df['report_year'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[0]))
 bus_df['report_month'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[1]))
@@ -42,7 +41,7 @@ bus_df['time_hour'] = bus_df['Time'].apply(lambda x: int(x.split(':')[0]))
 bus_df['time_min'] = bus_df['Time'].apply(lambda x: int(x.split(':')[1]))
 
 # Location
-bus_df['Location'] = bus_df['Location'].str.upper()
+bus_df['Location'] = bus_df['Location'].str.upper().str.replace(rf'[{punctuation}]', '')
 bus_df['Location'] = bus_df['Location'].replace(to_replace='STC', value='SCARBOROUGH TOWN CENTRE')
 bus_df['Location'] = bus_df['Location'].replace(to_replace='STN', value='STATION',regex=True)
 
@@ -127,7 +126,7 @@ streetcar_df['time_min'] = streetcar_df['Time'].apply(lambda x: int(x.split(':')
 streetcar_df = streetcar_df[((streetcar_df['Route'] > 300) & (streetcar_df['Route'] < 400)) | ((streetcar_df['Route'] >= 500) & (streetcar_df['Route'] <600)) ]
 
 # Location
-streetcar_df['Location'] = streetcar_df['Location'].str.upper()
+streetcar_df['Location'] = streetcar_df['Location'].str.upper().str.replace(rf'[{punctuation}]', '')
 
 # Min Delay
 streetcar_df['Min Delay'].fillna(streetcar_df['Delay'], inplace=True)
@@ -170,6 +169,10 @@ subway_df['time_min'] = subway_df['Time'].apply(lambda x: int(x.split(':')[1]))
 
 # parse station
 subway_df['is_station'] = subway_df['Station'].apply(lambda x: 1 if 'STATION' in x else 0)
+
+# Line
+# Remove punctuations
+subway_df['Line'] = subway_df['Line'].str.replace(rf'[{punctuation}]', '')
 
 # drop null values 
 subway_df = subway_df[subway_df['Min Delay'].notna()]
