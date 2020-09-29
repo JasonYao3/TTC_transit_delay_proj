@@ -45,7 +45,6 @@ bus_df['Location'] = bus_df['Location'].str.upper().str.replace(rf'[{punctuation
 bus_df['Location'] = bus_df['Location'].replace(to_replace='STC', value='SCARBOROUGH TOWN CENTRE')
 bus_df['Location'] = bus_df['Location'].replace(to_replace='STN', value='STATION',regex=True)
 
-
 # Min Delay: negative not sure what that means, 0 means 0 min delay and NaN means no record
 # All Min Delay and Delay columns mean the same thing, they are just name different. They could be merged into one Min Delay column where the NaN rows and the non NaN rows combine together
 
@@ -75,13 +74,29 @@ bus_df['Min Gap'] = bus_df['Min Gap'].apply(lambda x: np.abs(x))
 # Direction
 # There are about 1000 different records of direction. From numbers to descriptions.
 # Example of a description: No damage. No injuries Cleared at 17:24 by cab 107.                           1
-# bus_df['Direction'] = bus_df['Direction'].str.upper()
 # Direction has dashes, lowercap, uppercap,
 # According to the TTC bus readme: 
 # The direction of the bus route where B,b or BW indicates both ways. (On an east west route, it includes both east and west)                                           NB - northbound, SB - southbound, EB - eastbound, WB - westbound
 # NB - northbound, SB - southbound, EB - eastbound, WB - westbound
 # Standardize into N, S, E, W AND B.
 
+# function to simplify direction in to N,S,E,W,B and NaN
+def direction_simplifier(direction):
+    direction = str(direction).upper().replace(rf'[{punctuation}]', '').strip()
+    if 'NB' in direction or 'NORTH' in direction or 'N\B' in direction or 'N' in direction:
+        return 'N'
+    elif 'SB' in direction or 'SOUTH' in direction or 'S\B' in direction or 'S' in direction:
+        return 'S'
+    elif 'EB' in direction or 'EAST' in direction or 'E\B' in direction or 'E' in direction:
+        return 'E'
+    elif 'WB' in direction or 'WEST' in direction or 'W\B' in direction or 'W' in direction:
+        return 'W'
+    elif 'BW' in direction or 'BWS' in direction or 'BOTH WAYS' in direction or 'BOTHWAY' in direction or 'BWAYS' in direction or 'B' in direction:
+        return 'B'
+    else:
+        'NaN'
+bus_df['direction_simp'] = bus_df['Direction'].apply(direction_simplifier)
+bus_df['direction_simp'].value_counts()
 
 # Incident Id
 # Incident ID only occurs on April 2019, it does not provide much meaning compare to the Incident column and Incident ID 9 is always missing. Drop it.
@@ -141,9 +156,11 @@ streetcar_df['delay_type'] = streetcar_df['Min Delay'].apply(delay_type)
 # Min Gap
 streetcar_df['Min Gap'].fillna(streetcar_df['Gap'], inplace=True)
 
-# Drop duplicate columns
-streetcar_df.drop(columns=['Delay','Gap'], inplace=True)
+# Simplify direction
+streetcar_df['direction_simp'] = streetcar_df['Direction'].apply(direction_simplifier)
 
+# Drop duplicate columns
+streetcar_df.drop(columns=['Delay','Gap', 'Incident ID'], inplace=True)
 
 streetcar_df = streetcar_df[streetcar_df['Min Delay'].notna()]
 
@@ -171,8 +188,24 @@ subway_df['time_min'] = subway_df['Time'].apply(lambda x: int(x.split(':')[1]))
 subway_df['is_station'] = subway_df['Station'].apply(lambda x: 1 if 'STATION' in x else 0)
 
 # Line
-# Remove punctuations
-subway_df['Line'] = subway_df['Line'].str.replace(rf'[{punctuation}]', '')
+# function to simplify subway lines 
+def line_simplifier(line):
+    line = str(line).upper().replace(rf'[{punctuation}]', '').strip()
+    if 'YU  BD' in line or 'YUBD' in line or 'YU BD' in line or 'BDYU' in line:
+        return 'YU-BD'
+    elif 'BD' in line or 'BLOOR DANFORTH LINE' in line or 'BLOOR DANFORTH LINES' in line or 'BLOORDANFORTH' in line: 
+        return 'BD'
+    elif 'YU' in line or 'YU LINE' in line :
+        return 'YU'
+    elif 'SRT' in line:
+        return 'SRT'
+    elif 'SHP' in line or 'SHEPPARD' in line:
+        return 'SHP'
+    else:
+        'NaN'
+        
+subway_df['line_simp'] = subway_df['Line'].apply(line_simplifier)
+subway_df['line_simp'].value_counts()
 
 # drop null values 
 subway_df = subway_df[subway_df['Min Delay'].notna()]
