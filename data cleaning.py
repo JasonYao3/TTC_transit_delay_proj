@@ -8,6 +8,7 @@ Created on Mon Sep 28 12:20:11 2020
 import pandas as pd
 import numpy as np
 from string import punctuation
+from datetime import datetime
 
 bus_df = pd.read_csv('./data/merged_bus.csv', encoding='Latin-1')
 streetcar_df = pd.read_csv('./data/merged_streetcar.csv', encoding='Latin-1')
@@ -37,13 +38,23 @@ bus_df = bus_df[~((bus_df['Route'] >= 600) & (bus_df['Route'] <900))]
 bus_df = bus_df.loc[(bus_df['Route'] >= 5) & (bus_df['Route'] <= 999)]
 
 # Time - break down by hour and min.
-bus_df['time_hour'] = bus_df['Time'].apply(lambda x: int(x.split(':')[0]))
+
+# function to convert 12 hour AM/PM to 24 hour clock
+def convert_to_24hour(col):
+    in_time = datetime.strptime(col,'%I:%M:%S %p')
+    out_time = datetime.strftime(in_time, "%H")
+    return out_time
+
+bus_df['time_hour'] = bus_df['Time'].apply(convert_to_24hour)
 bus_df['time_min'] = bus_df['Time'].apply(lambda x: int(x.split(':')[1]))
 
 # Location
 bus_df['Location'] = bus_df['Location'].str.upper().str.replace(rf'[{punctuation}]', '')
 bus_df['Location'] = bus_df['Location'].replace(to_replace='STC', value='SCARBOROUGH TOWN CENTRE')
 bus_df['Location'] = bus_df['Location'].replace(to_replace='STN', value='STATION',regex=True)
+
+# if a bus is delayed at a station
+bus_df['at_station'] = bus_df['Location'].apply(lambda x: 1 if 'STATION' in str(x) else 0)
 
 # Min Delay: negative not sure what that means, 0 means 0 min delay and NaN means no record
 # All Min Delay and Delay columns mean the same thing, they are just name different. They could be merged into one Min Delay column where the NaN rows and the non NaN rows combine together
@@ -132,7 +143,7 @@ streetcar_df['report_month'] = streetcar_df['Report Date'].apply(lambda x: int(x
 streetcar_df['report_day'] = streetcar_df['Report Date'].apply(lambda x: int(x.split('-')[2]))
 
 # Time
-streetcar_df['time_hour'] = streetcar_df['Time'].apply(lambda x: int(x.split(':')[0]))
+streetcar_df['time_hour'] = streetcar_df['Time'].apply(convert_to_24hour)
 streetcar_df['time_min'] = streetcar_df['Time'].apply(lambda x: int(x.split(':')[1]))
 
 # Route
@@ -142,6 +153,9 @@ streetcar_df = streetcar_df[((streetcar_df['Route'] > 300) & (streetcar_df['Rout
 
 # Location
 streetcar_df['Location'] = streetcar_df['Location'].str.upper().str.replace(rf'[{punctuation}]', '')
+
+# if a street car is delayed at a station
+streetcar_df['at_station'] = streetcar_df['Location'].apply(lambda x: 1 if 'STATION' in str(x) else 0)
 
 # Min Delay
 streetcar_df['Min Delay'].fillna(streetcar_df['Delay'], inplace=True)
@@ -181,7 +195,7 @@ subway_df['report_month'] = subway_df['Date'].apply(lambda x: int(x.split('-')[1
 subway_df['report_day'] = subway_df['Date'].apply(lambda x: int(x.split('-')[2]))
 
 # Time
-subway_df['time_hour'] = subway_df['Time'].apply(lambda x: int(x.split(':')[0]))
+subway_df['time_hour'] = subway_df['Time'].apply(convert_to_24hour)
 subway_df['time_min'] = subway_df['Time'].apply(lambda x: int(x.split(':')[1]))
 
 # Station
@@ -271,8 +285,8 @@ subway_df['Station'] = subway_df['Station'].replace(to_replace='STN', value='STA
 subway_df['Station'] = subway_df['Station'].apply(lambda x: x.split('(')[0] if '(' in x else x)
 subway_df['Station'] = subway_df['Station'].str.replace(rf'[{punctuation}]', '')
 
-# parse station
-subway_df['is_station'] = subway_df['Station'].apply(lambda x: 1 if 'STATION' in x else 0)
+# if a subway train is delayed at a station
+subway_df['at_station'] = subway_df['Station'].apply(lambda x: 1 if 'STATION' in x else 0)
 
 # Line
 # function to simplify subway lines 
