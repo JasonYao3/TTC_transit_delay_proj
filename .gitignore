@@ -1,5 +1,5 @@
-list_of_bus_routes.xlsx
+*.xlsx
 test.ipynb
 *.tmp
 .ipynb_checkpoints/
-list_of_subway_station
+bus_streetcar_incident_id_april2019.txt
