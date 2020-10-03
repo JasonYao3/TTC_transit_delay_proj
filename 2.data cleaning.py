@@ -5,6 +5,9 @@ Created on Mon Sep 28 12:20:11 2020
 @author: Jason Yao
 """
 
+# 2 Data cleaning
+
+# 2.1 Import
 import pandas as pd
 import numpy as np
 from string import punctuation
@@ -14,58 +17,73 @@ bus_df = pd.read_csv('./data/merged_bus.csv', encoding='Latin-1')
 streetcar_df = pd.read_csv('./data/merged_streetcar.csv', encoding='Latin-1')
 subway_df = pd.read_csv('./data/merged_subway.csv', encoding='Latin-1')
 
-# Bus
+# 2.2 Cleaning bus dataset
+# The columns in this dataset are: Report Date,	Route, Time, Day, Location, Incident, Min Delay, Min Gap, Direction, Vehicle, Min Delay, Incident, ID, Delay, Gap
 
-# Missing Values
+# 2.2.1 Missing Values
 missing_vals_bus = bus_df.isnull().sum() / bus_df.shape[0]
 missing_vals_bus[missing_vals_bus > 0].sort_values(ascending=False)
 
-# Report Date column: Split year, month and day into 3 columns by "-"
-
+# 2.2.2 Report Date
+# Split year, month and day into 3 columns by "-".
 bus_df['report_year'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[0]))
 bus_df['report_month'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[1]))
 bus_df['report_day'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[2]))
 
-# Route
+# 2.2.3 Route
 # According to TTC Routes in Numerical Order: All Time Listing
 # https://transittoronto.ca/bus/8108.shtml
-# 5-10 will be renumbered as rapid transit routes need them
-# There is no route number between 700 to 899
-# 600-699 - Subway/Rapid Transit Routes (discontinued November 2002)
+# 5-10 are rapid transit route.
+# There are no route numbers between 700 to 899.
+# 600-699 - Subway/Rapid Transit Routes (discontinued November 2002).
 
 #print(bus_df.Route.unique())
 bus_df = bus_df[~((bus_df['Route'] >= 600) & (bus_df['Route'] <900))]
 bus_df = bus_df.loc[(bus_df['Route'] >= 5) & (bus_df['Route'] <= 999)]
 
-# Time - break down by hour and min.
-
-# function to convert 12 hour AM/PM to 24 hour clock
+# 2.2.4 Time
+# break down by hour and min.
+# function to convert 12 hour AM/PM to 24 hour clock.
 def convert_to_24hour(col):
     in_time = datetime.strptime(col,'%I:%M:%S %p')
     out_time = datetime.strftime(in_time, "%H")
     return out_time
 
-bus_df['time_hour'] = bus_df['Time'].apply(convert_to_24hour)
-bus_df['time_min'] = bus_df['Time'].apply(lambda x: int(x.split(':')[1]))
+# apply convert_to_24hour function
+bus_df['report_hour'] = bus_df['Time'].apply(convert_to_24hour)
+# create a new time by min column
+bus_df['report_min'] = bus_df['Time'].apply(lambda x: int(x.split(':')[1]))
 
-# Location
+# 2.2.5 Location
+
+# replace punctuations with empty space
 bus_df['Location'] = bus_df['Location'].str.upper().str.replace(rf'[{punctuation}]', '')
+# rename STC to SCARBOROUGH TOWN CENTRE
 bus_df['Location'] = bus_df['Location'].replace(to_replace='STC', value='SCARBOROUGH TOWN CENTRE')
+# rename STN to STATION
 bus_df['Location'] = bus_df['Location'].replace(to_replace='STN', value='STATION',regex=True)
 
-# if a bus is delayed at a station
+# if a bus is delayed at a station 1, else 0.
 bus_df['at_station'] = bus_df['Location'].apply(lambda x: 1 if 'STATION' in str(x) else 0)
 
-# Min Delay: negative not sure what that means, 0 means 0 min delay and NaN means no record
-# All Min Delay and Delay columns mean the same thing, they are just name different. They could be merged into one Min Delay column where the NaN rows and the non NaN rows combine together
+# 2.2.6 Min Delay
+# All Min Delay and Delay columns mean the same thing, they are named different.
+# They could be merged into one Min Delay column where the NaN rows and the non NaN rows combine together
 
 bus_df['Min Delay'].fillna(bus_df[' Min Delay'], inplace=True)
 bus_df['Min Delay'].fillna(bus_df['Delay'], inplace=True)
 
-# Negative time
+# Replace negative time with positive time.
 bus_df['Min Delay'] = bus_df['Min Delay'].apply(lambda x: np.abs(x))
 
-# function to categorize delay time
+# Remove Min delay rows if there's no record of it.
+bus_df = bus_df[bus_df['Min Delay'].notna()]
+
+# 2.2.7 Delay type
+# create a function to categorize delay time.
+# short delayis 0 to 10 mins.
+# medium delay is 10 to 30 mins.
+# long delay is more than 30 mins.
 def delay_type(col):
     if col >= 0 and col <= 10:
         return 'short'
@@ -74,25 +92,28 @@ def delay_type(col):
     elif col > 30:
         return 'long'
 
+# apply delay_type function
 bus_df['delay_type'] = bus_df['Min Delay'].apply(delay_type)
 
-# Min Gap
+# 2.2.8 Min Gap
+# Merge Min Gap and Gap columns into one single column by replacing null values from Min Gap with the Gap column.
 bus_df['Min Gap'].fillna(bus_df['Gap'], inplace=True)
 
-# Replace negative time with absolute value of it
+# Replace negative time with positive time.
 bus_df['Min Gap'] = bus_df['Min Gap'].apply(lambda x: np.abs(x))
 
-# Direction
+# 2.2.9 Direction
 # There are about 1000 different records of direction. From numbers to descriptions.
-# Example of a description: No damage. No injuries Cleared at 17:24 by cab 107.                           1
+# Example of a description: No damage. No injuries Cleared at 17:24 by cab 107.  1
 # Direction has dashes, lowercap, uppercap,
 # According to the TTC bus readme:
-# The direction of the bus route where B,b or BW indicates both ways. (On an east west route, it includes both east and west)                                           NB - northbound, SB - southbound, EB - eastbound, WB - westbound
+# The direction of the bus route where B,b or BW indicates both ways. (On an east west route, it includes both east and west)  NB - northbound, SB - southbound, EB - eastbound, WB - westbound
 # NB - northbound, SB - southbound, EB - eastbound, WB - westbound
 # Standardize into N, S, E, W AND B.
 
-# function to simplify direction in to N,S,E,W,B and NaN
+# function to simplify direction in to N,S,E,W,B and NaN for others.
 def direction_simplifier(direction):
+    # convert all lowercase characters to uppercase, replace punctuations with empty space and remove leading and the trailing spaces.
     direction = str(direction).upper().replace(rf'[{punctuation}]', '').strip()
     if 'NB' in direction or 'NORTH' in direction or 'N\B' in direction or 'N' in direction:
         return 'N'
@@ -106,19 +127,19 @@ def direction_simplifier(direction):
         return 'B'
     else:
         'NaN'
+
 bus_df['direction_simp'] = bus_df['Direction'].apply(direction_simplifier)
 bus_df['direction_simp'].value_counts()
 
-# Incident Id
-# Incident ID only occurs on April 2019, it does not provide much meaning compare to the Incident column and Incident ID 9 is always missing. Drop it.
-# Incident_ID  0.989149 is null
+# 2.2.10 Incident Id
+# Incident ID only occurs on the April 2019 record, it does not provide much meaning compare to the Incident column and Incident ID 9 is always missing.
+# Drop it.
+# Incident_ID has 99% null value
 
 # Drop duplicate columns  Min Delay, Delay, Gap and Incident ID
 bus_df.drop(columns=[' Min Delay', 'Delay','Gap','Incident ID'], inplace=True)
 
-# Remove Min delay rows if NaN
-bus_df = bus_df[bus_df['Min Delay'].notna()]
-
+# 2.2.11 Trim data frame
 # By: ImportData
 # function to remove the leading and trailing white space in the data frame
 def trim(dataset):
@@ -128,77 +149,86 @@ def trim(dataset):
 
 bus_df = trim(bus_df)
 
-# Rename columns
+# 2.2.12 Rename columns
 bus_df = bus_df.rename(columns = {'Report Date':'report_date', 'Min Delay': 'delay_min', 'Min Gap':'gap_min' })
 
-# Street Car
+# 2.3 Cleaning Streetcar dataset
+# The columns in this dataset are: Report Date,	Route, Time, Day, Location, Incident, Min Delay, Min Gap, Direction, Vehicle, Incident ID, Delay, Gap
+# Most of the columns in this dataset are similar to the bus dataset. Therefore, the procedure to clean this dataset will be similiar to the bus dataset as well.
 
-# Missing value
+# 2.3.1 Missing value
 missing_vals_streetcar = streetcar_df.isnull().sum() / streetcar_df.shape[0]
 missing_vals_streetcar[missing_vals_streetcar > 0].sort_values(ascending=False)
 
-# Report Date
+# 2.3.2 Report Date
 streetcar_df['report_year'] = streetcar_df['Report Date'].apply(lambda x: int(x.split('-')[0]))
 streetcar_df['report_month'] = streetcar_df['Report Date'].apply(lambda x: int(x.split('-')[1]))
 streetcar_df['report_day'] = streetcar_df['Report Date'].apply(lambda x: int(x.split('-')[2]))
 
-# Time
-streetcar_df['time_hour'] = streetcar_df['Time'].apply(convert_to_24hour)
-streetcar_df['time_min'] = streetcar_df['Time'].apply(lambda x: int(x.split(':')[1]))
+# 2.3.2 Time
+streetcar_df['report_hour'] = streetcar_df['Time'].apply(convert_to_24hour)
+streetcar_df['report_min'] = streetcar_df['Time'].apply(lambda x: int(x.split(':')[1]))
 
-# Route
+# 2.3.3 Route
+# Only these route numbers are streetcar routes
 # 300-399 - Routes in the overnight “Blue Night Network”
 # 500-599 - Streetcar routes
 streetcar_df = streetcar_df[((streetcar_df['Route'] > 300) & (streetcar_df['Route'] < 400)) | ((streetcar_df['Route'] >= 500) & (streetcar_df['Route'] <600)) ]
 
-# Location
+# 2.3.4 Location
 streetcar_df['Location'] = streetcar_df['Location'].str.upper().str.replace(rf'[{punctuation}]', '')
 
+# 2.3.5 At station or not
 # if a street car is delayed at a station
 streetcar_df['at_station'] = streetcar_df['Location'].apply(lambda x: 1 if 'STATION' in str(x) else 0)
 
-# Min Delay
+# 2.3.6 Min Delay
 streetcar_df['Min Delay'].fillna(streetcar_df['Delay'], inplace=True)
 
 # Negative time
 streetcar_df['Min Delay'] = streetcar_df['Min Delay'].apply(lambda x: np.abs(x))
-
-# categorize delay
-streetcar_df['delay_type'] = streetcar_df['Min Delay'].apply(delay_type)
-
-
-# Min Gap
-streetcar_df['Min Gap'].fillna(streetcar_df['Gap'], inplace=True)
-
-# Simplify direction
-streetcar_df['direction_simp'] = streetcar_df['Direction'].apply(direction_simplifier)
-
-# Drop duplicate columns
-streetcar_df.drop(columns=['Delay','Gap', 'Incident ID'], inplace=True)
-
+# Drop NaN value rows
 streetcar_df = streetcar_df[streetcar_df['Min Delay'].notna()]
 
+# 2.3.7 categorize delay
+streetcar_df['delay_type'] = streetcar_df['Min Delay'].apply(delay_type)
+
+# 2.3.8 Min Gap
+streetcar_df['Min Gap'].fillna(streetcar_df['Gap'], inplace=True)
+
+# 2.3.9 Simplify direction
+streetcar_df['direction_simp'] = streetcar_df['Direction'].apply(direction_simplifier)
+
+# 2.3.10 Drop duplicate columns
+streetcar_df.drop(columns=['Delay','Gap', 'Incident ID'], inplace=True)
+
+# 2.3.11 Trim dataset
 streetcar_df = trim(streetcar_df)
 
-# Rename columns
+# 2.3.12 Rename columns
 streetcar_df = streetcar_df.rename(columns = {'Report Date':'report_date', 'Min Delay': 'delay_min', 'Min Gap':'gap_min', 'Incident ID':'incident_id' })
 
-# Subway
+# 2.4 Cleaning Subway dataset
+# The columns in this dataset are: Date, Time, Day, Station, Code, Min Delay, Min Gap, Bound, Line, Vehicle
 
-# Missing Value
+# 2.4.1 Missing Value
 missing_vals_subway = subway_df.isnull().sum() / subway_df.shape[0]
 missing_vals_subway[missing_vals_subway > 0].sort_values(ascending=False)
 
-# Date
+# 2.4.2 Date
 subway_df['report_year'] = subway_df['Date'].apply(lambda x: int(x.split('-')[0]))
 subway_df['report_month'] = subway_df['Date'].apply(lambda x: int(x.split('-')[1]))
 subway_df['report_day'] = subway_df['Date'].apply(lambda x: int(x.split('-')[2]))
 
-# Time
-subway_df['time_hour'] = subway_df['Time'].apply(convert_to_24hour)
-subway_df['time_min'] = subway_df['Time'].apply(lambda x: int(x.split(':')[1]))
+# 2.4.3 Time
+subway_df['report_hour'] = subway_df['Time'].apply(convert_to_24hour)
+subway_df['report_min'] = subway_df['Time'].apply(lambda x: int(x.split(':')[1]))
 
-# Station
+# sort subway data by Date and Time
+subway_df.sort_values(['Date','Time'], inplace=True)
+
+# 2.4.4 Station
+# a list of station
 station_list = ['BATHURST',
 'BAY',
 'BAYVIEW',
@@ -277,8 +307,10 @@ station_list = ['BATHURST',
 'YORKDALE',
 'YONGE',
 ]
+
 # create regex pattern out of the list of words
 station_list_comb = '|'.join(station_list)
+# remove rows from the subway dataset if they don't contain any stations from the station list
 subway_df = subway_df[subway_df['Station'].str.contains(station_list_comb)]
 
 subway_df['Station'] = subway_df['Station'].replace(to_replace='STN', value='STATION',regex=True)
@@ -286,16 +318,16 @@ subway_df['Station'] = subway_df['Station'].apply(lambda x: x.split('(')[0] if '
 subway_df['Station'] = subway_df['Station'].str.replace(rf'[{punctuation}]', '')
 subway_df['Station'] = subway_df['Station'].replace(to_replace='KENNEDY BD STATION', value='KENNEDY STATION')
 
+# 2.4.5 at_station
 # if a subway train is delayed at a station
 subway_df['at_station'] = subway_df['Station'].apply(lambda x: 1 if 'STATION' in x else 0)
-
 # at interchange station
 
-# Bound 
+# 2.4.6 Bound
 # In this case, bound is direction.
 subway_df.Bound = subway_df.Bound.replace({'Y':np.nan,'5':np.nan,'R':np.nan})
 
-# Line
+# 2.4.7 Line
 # function to simplify subway lines
 def line_simplifier(line):
     line = str(line).upper().replace(rf'[{punctuation}]', '').strip()
@@ -316,19 +348,20 @@ subway_df['line_simp'] = subway_df['Line'].apply(line_simplifier)
 subway_df.line_simp = subway_df.line_simp.replace({'YU-BD':np.nan})
 subway_df['line_simp'].value_counts()
 
-
+# 2.4.8 Min Delay
 # drop null values
 subway_df = subway_df[subway_df['Min Delay'].notna()]
 
-# categorize delay
+# 2.4.9 categorize delay
 subway_df['delay_type'] = subway_df['Min Delay'].apply(delay_type)
 
-# trim
+# 2.4.10 trim dataset
 subway_df = trim(subway_df)
 
-# rename columns
+# 2.4.11 rename columns
 subway_df = subway_df.rename(columns = {'Date':'report_date', 'Min Delay': 'delay_min', 'Min Gap':'gap_min'})
 
+# 2.5 Save to csv
 # save all 3 dataframes to 3 new csv files
 bus_df.to_csv('./data/bus_cleaned.csv',index = False)
 streetcar_df.to_csv('./data/streetcar_cleaned.csv',index = False)
