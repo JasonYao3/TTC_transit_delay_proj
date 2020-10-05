@@ -26,9 +26,9 @@ missing_vals_bus[missing_vals_bus > 0].sort_values(ascending=False)
 
 # 2.2.2 Report Date
 # Split year, month and day into 3 columns by "-".
-bus_df['report_year'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[0]))
-bus_df['report_month'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[1]))
-bus_df['report_day'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[2]))
+bus_df['year'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[0]))
+bus_df['month'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[1]))
+bus_df['day'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[2]))
 
 # 2.2.3 Route
 # According to TTC Routes in Numerical Order: All Time Listing
@@ -50,9 +50,9 @@ def convert_to_24hour(col):
     return out_time
 
 # apply convert_to_24hour function
-bus_df['report_hour'] = bus_df['Time'].apply(convert_to_24hour)
+bus_df['hour'] = bus_df['Time'].apply(convert_to_24hour)
 # create a new time by min column
-bus_df['report_min'] = bus_df['Time'].apply(lambda x: int(x.split(':')[1]))
+bus_df['min'] = bus_df['Time'].apply(lambda x: int(x.split(':')[1]))
 
 # 2.2.5 Location
 
@@ -150,8 +150,10 @@ def trim(dataset):
 bus_df = trim(bus_df)
 
 # 2.2.12 Rename columns
-bus_df = bus_df.rename(columns = {'Report Date':'report_date', 'Min Delay': 'delay_min', 'Min Gap':'gap_min' })
+bus_df = bus_df.rename(columns = {'Report Date':'exact_date', 'Route':'route_num', 'Time':'exact_time','Day':'day_of_week','Location':'location', 'Incident':'incident','Direction':'direction',
+                                  'Vehicle':'vehicle','Min Delay': 'delay_min', 'Min Gap':'gap_min' })
 
+'''
 # 2.3 Cleaning Streetcar dataset
 # The columns in this dataset are: Report Date,	Route, Time, Day, Location, Incident, Min Delay, Min Gap, Direction, Vehicle, Incident ID, Delay, Gap
 # Most of the columns in this dataset are similar to the bus dataset. Therefore, the procedure to clean this dataset will be similiar to the bus dataset as well.
@@ -161,13 +163,13 @@ missing_vals_streetcar = streetcar_df.isnull().sum() / streetcar_df.shape[0]
 missing_vals_streetcar[missing_vals_streetcar > 0].sort_values(ascending=False)
 
 # 2.3.2 Report Date
-streetcar_df['report_year'] = streetcar_df['Report Date'].apply(lambda x: int(x.split('-')[0]))
-streetcar_df['report_month'] = streetcar_df['Report Date'].apply(lambda x: int(x.split('-')[1]))
-streetcar_df['report_day'] = streetcar_df['Report Date'].apply(lambda x: int(x.split('-')[2]))
+streetcar_df['year'] = streetcar_df['Report Date'].apply(lambda x: int(x.split('-')[0]))
+streetcar_df['month'] = streetcar_df['Report Date'].apply(lambda x: int(x.split('-')[1]))
+streetcar_df['day'] = streetcar_df['Report Date'].apply(lambda x: int(x.split('-')[2]))
 
 # 2.3.2 Time
-streetcar_df['report_hour'] = streetcar_df['Time'].apply(convert_to_24hour)
-streetcar_df['report_min'] = streetcar_df['Time'].apply(lambda x: int(x.split(':')[1]))
+streetcar_df['hour'] = streetcar_df['Time'].apply(convert_to_24hour)
+streetcar_df['min'] = streetcar_df['Time'].apply(lambda x: int(x.split(':')[1]))
 
 # 2.3.3 Route
 # Only these route numbers are streetcar routes
@@ -206,7 +208,10 @@ streetcar_df.drop(columns=['Delay','Gap', 'Incident ID'], inplace=True)
 streetcar_df = trim(streetcar_df)
 
 # 2.3.12 Rename columns
-streetcar_df = streetcar_df.rename(columns = {'Report Date':'report_date', 'Min Delay': 'delay_min', 'Min Gap':'gap_min', 'Incident ID':'incident_id' })
+#streetcar_df = streetcar_df.rename(columns = {'Report Date':'report_date', 'Min Delay': 'delay_min', 'Min Gap':'gap_min', })
+streetcar_df = streetcar_df.rename(columns = {'Report Date':'report_date', 'Route':'route_num', 'Time':'exact_time','Day':'day_of_week','Location':'location', 'Incident':'incident','Direction':'direction',
+                                  'Vehicle':'vehicle','Min Delay': 'delay_min', 'Min Gap':'gap_min' })
+'''
 
 # 2.4 Cleaning Subway dataset
 # The columns in this dataset are: Date, Time, Day, Station, Code, Min Delay, Min Gap, Bound, Line, Vehicle
@@ -216,13 +221,13 @@ missing_vals_subway = subway_df.isnull().sum() / subway_df.shape[0]
 missing_vals_subway[missing_vals_subway > 0].sort_values(ascending=False)
 
 # 2.4.2 Date
-subway_df['report_year'] = subway_df['Date'].apply(lambda x: int(x.split('-')[0]))
-subway_df['report_month'] = subway_df['Date'].apply(lambda x: int(x.split('-')[1]))
-subway_df['report_day'] = subway_df['Date'].apply(lambda x: int(x.split('-')[2]))
+subway_df['year'] = subway_df['Date'].apply(lambda x: int(x.split('-')[0]))
+subway_df['month'] = subway_df['Date'].apply(lambda x: int(x.split('-')[1]))
+subway_df['day'] = subway_df['Date'].apply(lambda x: int(x.split('-')[2]))
 
 # 2.4.3 Time
-subway_df['report_hour'] = subway_df['Time'].apply(convert_to_24hour)
-subway_df['report_min'] = subway_df['Time'].apply(lambda x: int(x.split(':')[1]))
+subway_df['hour'] = subway_df['Time'].apply(convert_to_24hour)
+subway_df['min'] = subway_df['Time'].apply(lambda x: int(x.split(':')[1]))
 
 # sort subway data by Date and Time
 subway_df.sort_values(['Date','Time'], inplace=True)
@@ -359,7 +364,7 @@ subway_df['delay_type'] = subway_df['Min Delay'].apply(delay_type)
 subway_df = trim(subway_df)
 
 # 2.4.11 rename columns
-subway_df = subway_df.rename(columns = {'Date':'report_date', 'Min Delay': 'delay_min', 'Min Gap':'gap_min'})
+subway_df = subway_df.rename(columns = {'Date':'exact_date', 'Time':'exact_time','Day':'day_of_week','Station':'station','Code':'code','Bound':'bound','Line':'line','Vehicle':'vehicle', 'Min Delay': 'delay_min', 'Min Gap':'gap_min'})
 
 # 2.5 Save to csv
 # save all 3 dataframes to 3 new csv files
