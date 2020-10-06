@@ -14,7 +14,7 @@ from string import punctuation
 from datetime import datetime
 
 bus_df = pd.read_csv('./data/merged_bus.csv', encoding='Latin-1')
-streetcar_df = pd.read_csv('./data/merged_streetcar.csv', encoding='Latin-1')
+#streetcar_df = pd.read_csv('./data/merged_streetcar.csv', encoding='Latin-1')
 subway_df = pd.read_csv('./data/merged_subway.csv', encoding='Latin-1')
 
 # 2.2 Cleaning bus dataset
@@ -81,16 +81,19 @@ bus_df = bus_df[bus_df['Min Delay'].notna()]
 
 # 2.2.7 Delay type
 # create a function to categorize delay time.
-# short delayis 0 to 10 mins.
+# on time is 0 mins delays
+# short delay is 1 to 10 mins.
 # medium delay is 10 to 30 mins.
 # long delay is more than 30 mins.
 def delay_type(col):
-    if col >= 0 and col <= 10:
+    if col >= 1 and col <= 10:
         return 'short'
     elif col > 10 and col <= 30:
         return 'medium'
     elif col > 30:
         return 'long'
+    elif col == 0:
+        return 'on time'
 
 # apply delay_type function
 bus_df['delay_type'] = bus_df['Min Delay'].apply(delay_type)
