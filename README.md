@@ -1,6 +1,5 @@
 # TTC Bus and Subway Delay Data Analysis: Project Overview
 
-# Data Science Salary Estimator: Project Overview 
 * 
 * Merged 46 excels files from City of Toronto using python
 * Engineered features from the text of each job description to quantify the value companies put on python, excel, aws, and spark. 
