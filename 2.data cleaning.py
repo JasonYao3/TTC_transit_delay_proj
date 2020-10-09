@@ -14,7 +14,6 @@ from string import punctuation
 from datetime import datetime
 
 bus_df = pd.read_csv('./data/merged_bus.csv', encoding='Latin-1')
-#streetcar_df = pd.read_csv('./data/merged_streetcar.csv', encoding='Latin-1')
 subway_df = pd.read_csv('./data/merged_subway.csv', encoding='Latin-1')
 
 # 2.2 Cleaning bus dataset
@@ -156,65 +155,7 @@ bus_df = trim(bus_df)
 bus_df = bus_df.rename(columns = {'Report Date':'exact_date', 'Route':'route_num', 'Time':'exact_time','Day':'day_of_week','Location':'location', 'Incident':'incident','Direction':'direction',
                                   'Vehicle':'vehicle','Min Delay': 'delay_min', 'Min Gap':'gap_min' })
 
-'''
-# 2.3 Cleaning Streetcar dataset
-# The columns in this dataset are: Report Date,	Route, Time, Day, Location, Incident, Min Delay, Min Gap, Direction, Vehicle, Incident ID, Delay, Gap
-# Most of the columns in this dataset are similar to the bus dataset. Therefore, the procedure to clean this dataset will be similiar to the bus dataset as well.
 
-# 2.3.1 Missing value
-missing_vals_streetcar = streetcar_df.isnull().sum() / streetcar_df.shape[0]
-missing_vals_streetcar[missing_vals_streetcar > 0].sort_values(ascending=False)
-
-# 2.3.2 Report Date
-streetcar_df['year'] = streetcar_df['Report Date'].apply(lambda x: int(x.split('-')[0]))
-streetcar_df['month'] = streetcar_df['Report Date'].apply(lambda x: int(x.split('-')[1]))
-streetcar_df['day'] = streetcar_df['Report Date'].apply(lambda x: int(x.split('-')[2]))
-
-# 2.3.2 Time
-streetcar_df['hour'] = streetcar_df['Time'].apply(convert_to_24hour)
-streetcar_df['min'] = streetcar_df['Time'].apply(lambda x: int(x.split(':')[1]))
-
-# 2.3.3 Route
-# Only these route numbers are streetcar routes
-# 300-399 - Routes in the overnight “Blue Night Network”
-# 500-599 - Streetcar routes
-streetcar_df = streetcar_df[((streetcar_df['Route'] > 300) & (streetcar_df['Route'] < 400)) | ((streetcar_df['Route'] >= 500) & (streetcar_df['Route'] <600)) ]
-
-# 2.3.4 Location
-streetcar_df['Location'] = streetcar_df['Location'].str.upper().str.replace(rf'[{punctuation}]', '')
-
-# 2.3.5 At station or not
-# if a street car is delayed at a station
-streetcar_df['at_station'] = streetcar_df['Location'].apply(lambda x: 1 if 'STATION' in str(x) else 0)
-
-# 2.3.6 Min Delay
-streetcar_df['Min Delay'].fillna(streetcar_df['Delay'], inplace=True)
-
-# Negative time
-streetcar_df['Min Delay'] = streetcar_df['Min Delay'].apply(lambda x: np.abs(x))
-# Drop NaN value rows
-streetcar_df = streetcar_df[streetcar_df['Min Delay'].notna()]
-
-# 2.3.7 categorize delay
-streetcar_df['delay_type'] = streetcar_df['Min Delay'].apply(delay_type)
-
-# 2.3.8 Min Gap
-streetcar_df['Min Gap'].fillna(streetcar_df['Gap'], inplace=True)
-
-# 2.3.9 Simplify direction
-streetcar_df['direction_simp'] = streetcar_df['Direction'].apply(direction_simplifier)
-
-# 2.3.10 Drop duplicate columns
-streetcar_df.drop(columns=['Delay','Gap', 'Incident ID'], inplace=True)
-
-# 2.3.11 Trim dataset
-streetcar_df = trim(streetcar_df)
-
-# 2.3.12 Rename columns
-#streetcar_df = streetcar_df.rename(columns = {'Report Date':'report_date', 'Min Delay': 'delay_min', 'Min Gap':'gap_min', })
-streetcar_df = streetcar_df.rename(columns = {'Report Date':'report_date', 'Route':'route_num', 'Time':'exact_time','Day':'day_of_week','Location':'location', 'Incident':'incident','Direction':'direction',
-                                  'Vehicle':'vehicle','Min Delay': 'delay_min', 'Min Gap':'gap_min' })
-'''
 
 # 2.4 Cleaning Subway dataset
 # The columns in this dataset are: Date, Time, Day, Station, Code, Min Delay, Min Gap, Bound, Line, Vehicle
@@ -324,7 +265,16 @@ subway_df = subway_df[subway_df['Station'].str.contains(station_list_comb)]
 subway_df['Station'] = subway_df['Station'].replace(to_replace='STN', value='STATION',regex=True)
 subway_df['Station'] = subway_df['Station'].apply(lambda x: x.split('(')[0] if '(' in x else x)
 subway_df['Station'] = subway_df['Station'].str.replace(rf'[{punctuation}]', '')
+# Standard interchange stops 
+subway_df['Station'] = subway_df['Station'].replace(to_replace='YONGE BD STATION', value='BLOOR YONGE STATION')
+subway_df['Station'] = subway_df['Station'].replace(to_replace='BLOOR STATION', value='BLOOR YONGE STATION')
+subway_df['Station'] = subway_df['Station'].replace(to_replace='SPADINA BD STATION', value='SPADINA STATION')
+subway_df['Station'] = subway_df['Station'].replace(to_replace='SPADINA YUS STATION', value='SPADINA STATION')
 subway_df['Station'] = subway_df['Station'].replace(to_replace='KENNEDY BD STATION', value='KENNEDY STATION')
+subway_df['Station'] = subway_df['Station'].replace(to_replace='KENNEDY SRT STATION', value='KENNEDY STATION')
+subway_df['Station'] = subway_df['Station'].replace(to_replace='YONGE SHP STATION', value='SHEPPARD YONGE STATION')
+subway_df['Station'] = subway_df['Station'].replace(to_replace='SHEPPARD STATION', value='SHEPPARD YONGE STATION')
+
 
 # 2.4.5 at_station
 # if a subway train is delayed at a station
@@ -370,7 +320,6 @@ subway_df = trim(subway_df)
 subway_df = subway_df.rename(columns = {'Date':'exact_date', 'Time':'exact_time','Day':'day_of_week','Station':'station','Code':'code','Bound':'bound','Line':'line','Vehicle':'vehicle', 'Min Delay': 'delay_min', 'Min Gap':'gap_min'})
 
 # 2.5 Save to csv
-# save all 3 dataframes to 3 new csv files
+# save all dataframes to 2 new csv files
 bus_df.to_csv('./data/bus_cleaned.csv',index = False)
-streetcar_df.to_csv('./data/streetcar_cleaned.csv',index = False)
 subway_df.to_csv('./data/subway_cleaned.csv',index = False)
