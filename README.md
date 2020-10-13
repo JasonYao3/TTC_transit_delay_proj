@@ -7,7 +7,15 @@
 ## Summary of Findings
 *
 *
-
+'''
+for col in bus_cat.columns:
+    plt.figure(figsize=(12,5))
+    cat_num = bus_cat[col].value_counts()
+    print("Graph for %s: total categories = %d" %(col, len(cat_num)))
+    chart = sns.barplot(x=cat_num.index, y=cat_num,color="lightseagreen")
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=20, horizontalalignment='right')
+    plt.show()
+'''
 
 ## Intro
 * As a student who went to Ryerson University, I had to commute alot on the TTC buses and subways every week. During my riderships, I had experienced countless numbers of delays on both bus and subway, whether they were long or short delays. Now, I think it would be interesting to dive into the delay data and try to find out interesting insights.
