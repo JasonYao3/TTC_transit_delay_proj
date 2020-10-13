@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+da# -*- coding: utf-8 -*-
 """
 Created on Mon Sep 28 12:20:11 2020
 
@@ -265,7 +265,7 @@ subway_df = subway_df[subway_df['Station'].str.contains(station_list_comb)]
 subway_df['Station'] = subway_df['Station'].replace(to_replace='STN', value='STATION',regex=True)
 subway_df['Station'] = subway_df['Station'].apply(lambda x: x.split('(')[0] if '(' in x else x)
 subway_df['Station'] = subway_df['Station'].str.replace(rf'[{punctuation}]', '')
-# Standard interchange stops 
+# Standard interchange stops
 subway_df['Station'] = subway_df['Station'].replace(to_replace='YONGE BD STATION', value='BLOOR YONGE STATION')
 subway_df['Station'] = subway_df['Station'].replace(to_replace='BLOOR STATION', value='BLOOR YONGE STATION')
 subway_df['Station'] = subway_df['Station'].replace(to_replace='SPADINA BD STATION', value='SPADINA STATION')
