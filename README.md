@@ -4,11 +4,10 @@
 * Engineered variablesfeatures from the text of each column.
 * Explored datasets to analyze relationships among features (both continuous and categorical).
 
-## Code and Resources Used 
-**Python Version:** 3.7  
-**Packages:** pandas, numpy, matplotlib, seaborn 
-**Data Source:**  https://open.toronto.ca/
-**Ken Jee:** https://github.com/PlayingNumbers/ds_salary_proj
+## Summary of Findings
+*
+*
+
 
 ## Intro
 * As a student who went to Ryerson University, I had to commute alot on the TTC buses and subways every week. During my riderships, I had experienced countless numbers of delays on both bus and subway, whether they were long or short delays. Now, I think it would be interesting to dive into the delay data and try to find out interesting insights.
