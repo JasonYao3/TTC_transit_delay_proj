@@ -2,9 +2,9 @@
 
 ## Project Overview
 * Performed extensive data analysis on TTC bus and subway delays to see what caused delays, when and where they happened the most. 
-* Merged and cleaned 46 excels files, for over 600k records of transit delays from City of Toronto.
+* Merged and cleaned 46 excels files of raw data from City of Toronto.
 * Engineered variables features from each column.
-* Explored datasets to analyze relationships among features (both continuous and categorical).
+* Explored over 600k records of transit delays to analyze relationships among features (both continuous and categorical).
 
 ### Have you experienced this before?
 <img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/UofT_news.jpg' width="500" height="300">
@@ -42,7 +42,7 @@ Image Source: [ U of T news ](https://www.utoronto.ca/news/how-transit-authoriti
 
 ### Subway
 * 2014-02-05 has 100 delays in one day.
-* 90% of the delays are less than 10 minutes
+* 90% of the delays are less than 10 minutes.
 * 8AM is the most requent time of delays and 5AM takes the longest time.
 * Weekdays have more delays than weekends, but saturday is the longest delay time.
 * Subways going west bound have the most number of delays, but subways going north takes the longest.
