@@ -3,7 +3,7 @@
 ## Project Overview
 * Performed extensive data analysis on TTC bus and subway delays to see what caused delays, when and where they happened the most. 
 * Merged and cleaned 46 excels files of raw data from City of Toronto.
-* Engineered variables features for columns.
+* Engineered variables features from date, time, delay columns to extract features. 
 * Explored over 600k records of transit delays to analyze relationships among features (both continuous and categorical).
 
 ### Have you experienced this before?
@@ -41,7 +41,7 @@ Image Source: [ U of T news ](https://www.utoronto.ca/news/how-transit-authoriti
 * Worst scenario is buses going west on saturday would be behind schedule by 55 minutes.
 
 ### Subway
-* 2014-02-05 has 100 delays in one day.
+* 2014-02-05 has 100 delays in one day which is the most out of all other days.
 * 90% of the delays are less than 10 minutes.
 * 8AM is the most requent time of delays and 5AM takes the longest time.
 * Weekdays have more delays than weekends, but saturday is the longest delay time.
@@ -54,7 +54,7 @@ Image Source: [ U of T news ](https://www.utoronto.ca/news/how-transit-authoriti
 
 <a name="Introduction"></a>
 ## Introduction
-As a student who went to Ryerson University, I had to commute almost every week on TTC buses and subways. During my riderships, I had experienced countless number of delays on both buses and subwayes, whether they were long delays (on a shuttle bus) or short delays. Now, I think it would be interesting to dive into the delay data and try to find interesting insights out of it.
+As a student who went to Ryerson University, I had to commute almost every week on TTC buses and subways. During my riderships, I had experienced countless number of delays on both buses and subwayes, whether they were long delays (on a shuttle bus) or short delays (emergence alarm activated). Now that I'm graduated, I think it would be interesting to dive into the delay data and try to find interesting insights out of something I used to be so familar with but overlooked at. 
 
 <a name="Data_Collection"></a>
 ## Data Collection
