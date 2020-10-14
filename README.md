@@ -30,10 +30,11 @@ As a student who went to Ryerson University, I had to commute almost every week 
 
 <a name="Data_Collection"></a>
 ## Data Collection
-- I downloaded the data from the [City of Toronto’s Open Data Portal](https://open.toronto.ca/). There are two sets of data for the two different transportations from January 1, 2014 to May 31, 2020.
-- The TTC bus dataset has 7 excel files with 12 excel worksheets for each month from 2014 to 2019 and 5 excel worksheets for each month in 2020.
-- The TTC subway dataset has 39 excel files for each month from 2014 to 2020.
-- In the dataset, each row is a record to the delay-causing incident and we have the following information:
+I downloaded the data from the [City of Toronto’s Open Data Portal](https://open.toronto.ca/). There are two sets of data for the two different transportations from January 1, 2014 to May 31, 2020.
+The TTC bus dataset has 7 excel files with 12 excel worksheets for each month from 2014 to 2019 and 5 excel worksheets for each month in 2020.
+The TTC subway dataset has 39 excel files for each month from 2014 to 2020.
+
+In the dataset, each row is a record of the delay-causing incident and we have the following information:
 *  Report date
 *  Route Number (The number of the bus route)
 *  Time of the day	
@@ -42,7 +43,7 @@ As a student who went to Ryerson University, I had to commute almost every week 
 *  Incident (The description of the delay-causing incident)
 *  Delay (in minute)	
 *  Min Gap (in minute)
-*  Direction	/ Bound (where the vehicle heading)
+*  Direction / Bound (where the vehicle heading)
 *  Vehicle (vehicle number)
 *  Code	(TTC delay code)
 *  Line (TTC subway Line)
@@ -78,33 +79,23 @@ def merge_excel(transit):
 In the 2.Data cleaning Python file, I needed to clean it up the two merged excel files so that they are usable for our analysis. I made the following changes and created the following variables:
 
 Parsed date into year, month and date and time into hour and minute.
-<details open>
-<summary>Show/Hide</summary>
-<br>
-    
+
 ```
 bus_df['year'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[0]))
 bus_df['month'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[1]))
 bus_df['day'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[2]))
 ```
-</details>
 
 Removed route numbers that are not bus route numbers. According to [TTC ROUTES IN NUMERICAL ORDER: ALL TIME LISTING](https://transittoronto.ca/bus/8108.shtml)
-<details open>
-<summary>Show/Hide</summary>
-<br>
-    
+
 ```
 bus_df = bus_df[~((bus_df['Route'] >= 600) & (bus_df['Route'] <900))]
 bus_df = bus_df.loc[(bus_df['Route'] >= 5) & (bus_df['Route'] <= 999)]
 ```
-</details>
+</>
 
 Converted time from 12 hour to 24 hour.
-<details open>
-<summary>Show/Hide</summary>
-<br>
-    
+
 ```
 def convert_to_24hour(col):
     in_time = datetime.strptime(col,'%I:%M:%S %p')
@@ -112,53 +103,35 @@ def convert_to_24hour(col):
     return out_time
 bus_df['hour'] = bus_df['Time'].apply(convert_to_24hour)
 ```
-</details>
 
 Cleaned up location and station.
-<details open>
-<summary>Show/Hide</summary>
-<br>
-    
+
 ```
 bus_df['Location'] = bus_df['Location'].str.upper().str.replace(rf'[{punctuation}]', '')
 bus_df['Location'] = bus_df['Location'].replace(to_replace='STC', value='SCARBOROUGH TOWN CENTRE')
 bus_df['Location'] = bus_df['Location'].replace(to_replace='STN', value='STATION',regex=True)
 ```
-</details>
 
 Removed empty delay rows.
-<details open>
-<summary>Show/Hide</summary>
-<br>
-    
+
 ```
 bus_df = bus_df[bus_df['Min Delay'].notna()]
 ```
-</details>
 
 Made a new column for whether transit delayed at station or not
-<details open>
-<summary>Show/Hide</summary>
-<br>
-    
+ 
 ```
 bus_df['at_station'] = bus_df['Location'].apply(lambda x: 1 if 'STATION' in str(x) else 0)
 ```
-</details>
 
 Removed duplicate columns and fill in NULL values for delay and gap columns.
 
-<details open>
-<summary>Show/Hide</summary>
-<br>
-    
 ```
 bus_df['Min Delay'].fillna(bus_df[' Min Delay'], inplace=True)
 bus_df['Min Delay'].fillna(bus_df['Delay'], inplace=True)
 bus_df['Min Gap'].fillna(bus_df['Gap'], inplace=True)
 bus_df.drop(columns=[' Min Delay', 'Delay','Gap'], inplace=True)
 ```
-</details>
 
 Added a new column to categorize different delay type by how long it is.
 
