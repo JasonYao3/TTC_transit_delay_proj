@@ -331,11 +331,12 @@ plt.show()
 
 <a name="EDA_Graphs"></a>
 ## EDA Graphs
-- Below are some of the highlights from the graphs:
+
+Below are some of the highlights from the graphs:
 
 Distribution plot and box plot of the bus route num
 
-![]("https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_route_num_dist.jpg")
+  ![](https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_route_num_dist.jpg)
 
 <h5 align="center"> Bar graphs for bus and subway delay by hour of the day ( Bus (Left) and Subway (Right) )</h5>
 <table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_hour_bargraph.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/subway_hour_bargraph.jpg' width=500></td></tr></table>
