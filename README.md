@@ -81,6 +81,7 @@ In the 2.Data cleaning Python file, I needed to clean it up the two merged excel
 <details open>
 <summary>Show/Hide</summary>
 <br>
+    
 ```
 bus_df['year'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[0]))
 bus_df['month'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[1]))
@@ -317,6 +318,7 @@ plt.axis('off')
 plt.show()
 ```
 </details>
+
 <a name="EDA_Graphs"></a>
 ## EDA Graphs
 - Below are some of the highlights from the graphs:
