@@ -181,11 +181,14 @@ bus_df['direction_simp'] = bus_df['Direction'].apply(direction_simplifier)
 ## EDA Code
 In the 3.Bus EDA and 4.Subway EDA IPython files. 
 
-I looked at the distributions of the continuous variables using seaborn graphs (distplot and boxplot), their correlations using heatmaps and their statistical measures (quantiles, Interquartile range and outliers) using numpy quantiles function.
+-  I looked at the distributions of the continuous variables using seaborn graphs(distplot and boxplot)
 
-<details open>
-<summary>Show/Hide</summary>
-<br>
+<h5 align="center"> Distribution plot and box plot of delay for bus and subway ( Bus (Left) and Subway (Right) )</h5>
+<table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_delay_min_dist.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/subway_delay_min_dist.jpg' width=500></td></tr></table>
+
+- Both graphs have many outliers.
+- The bus graph on the left has 456000 outliers and 10 minutes delay has 67000 records.
+- The subway graph on the right has 113000 outliers and 0 minute delay has 78000 records.
     
 ```
 # initialize continuous variables
@@ -202,11 +205,19 @@ for col in bus_cont.columns:
     compute_quantiles(cont_num)
     print('\n')
 ```
+
+- check correlations between continuous variables using heatmap
+
+<img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_heatmap.jpg' width=500>
+
 ```
 # check correlations between continuous variables
 cmap = sns.diverging_palette(660, 600, as_cmap=True)
 sns.heatmap(bus_cont.corr(), vmax=.3, center=0, cmap=cmap, square=True, linewidths=.5, cbar_kws={"shrink": .5})
 ```
+
+- Calculate quantiles, Interquartile range and outliers using numpy quantiles function
+
 ```
 # a function to find quantiles, or where most data are.
 def compute_quantiles(col_counts):
@@ -225,13 +236,11 @@ def compute_quantiles(col_counts):
     print('Maximum occurence is %d of %s.' %(col_counts.max(), col_counts.index[0]))
 compute_quantiles(bus_date_counts)
 ```
-</details>
 
-I looked at the value counts for the various categorical variables using seaborn barplots and countplots for top code, subway station, bus location and bus route.
+- I looked at the value counts for the various categorical variables using seaborn barplots and countplots for top code, subway station, bus location and bus route.
 
-<details open>
-<summary>Show/Hide</summary>
-<br>
+<h5 align="center"> Bar graphs for bus and subway delay by hour of the day ( Bus (Left) and Subway (Right) )</h5>
+<table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_hour_bargraph.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/subway_hour_bargraph.jpg' width=500></td></tr></table>
     
 ```
 # dataframe for categorical variables
@@ -249,14 +258,12 @@ for col in bus_cat.columns:
     plt.title("Graph for %s" %(col))
     plt.show()
 ```
-</details>
 
-I used barplots to show the relationship between delays vs day of the week, incident, hour, direction, subway lines.
+- Use barplots to show the relationship between delays vs day of the week, incident, hour, direction, subway lines.
 
-<details open>
-<summary>Show/Hide</summary>
-<br>
-    
+<h5 align="center"> Delays by Days of the Week and Subway Lines (Bus Direction) ( Bus Direction(Left) and Subway Lines (Right) )</h5>
+<table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/Delays%20vs%20Days%20of%20the%20Week%20and%20Direction.JPG' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/Delays%20by%20Days%20of%20the%20Week%20and%20Subway%20Lines.JPG' width=500></td></tr></table>
+
 ```
 plt.figure(figsize=(12,5));
 sns.barplot(x='day_of_week', y='delay_min', data= bus_df, ci=None);
@@ -264,14 +271,12 @@ plt.title("Delays vs Day of the Week");
 plt.xlabel("Days of the Week");
 plt.ylabel("Delay in minute");
 ```
-</details>
 
-I used wordclouds to show the most frequent recorded in terms of bus location and subway station.
+- Use wordclouds to show the most frequent recorded in terms of bus location and subway station.
 
-<details open>
-<summary>Show/Hide</summary>
-<br>
-    
+<h5 align="center"> Wordcloud to visualize most frequent location and station ( Bus Location (Left) and Subway Station (Right) )</h5>
+<table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_location_wordcloud.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/subway_station_wordcloud.jpg' width=500></td></tr></table>
+
 ```
 # Code is from Ken Jee
 words = " ".join(bus_df_notna['location'])
@@ -299,28 +304,6 @@ plt.imshow(wc, interpolation="bilinear")
 plt.axis('off')
 plt.show()
 ```
-</details>
-
-<a name="EDA_Graphs"></a>
-## EDA Graphs
-
-Below are some of the highlights from the graphs:
-
-<h5 align="center"> Distribution plot and box plot of delay for bus and subway ( Bus (Left) and Subway (Right) )</h5>
-<table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_delay_min_dist.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/subway_delay_min_dist.jpg' width=500></td></tr></table>
-
-- Both graphs have many outliers.
-- The bus graph on the left has 456000 outliers and 10 minutes delay has 67000 records.
-- The subway graph on the right has 113000 outliers and 0 minute delay has 78000 records.
-
-<h5 align="center"> Bar graphs for bus and subway delay by hour of the day ( Bus (Left) and Subway (Right) )</h5>
-<table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_hour_bargraph.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/subway_hour_bargraph.jpg' width=500></td></tr></table>
-
-<h5 align="center"> Delays by Days of the Week and Subway Lines (Bus Direction) ( Bus Direction(Left) and Subway Lines (Right) )</h5>
-<table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/Delays%20vs%20Days%20of%20the%20Week%20and%20Direction.JPG' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/Delays%20by%20Days%20of%20the%20Week%20and%20Subway%20Lines.JPG' width=500></td></tr></table>
-
-<h5 align="center"> Wordcloud to visualize most frequent location and station ( Bus Location (Left) and Subway Station (Right) )</h5>
-<table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_location_wordcloud.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/subway_station_wordcloud.jpg' width=500></td></tr></table>
 
 ### What Next?
 Model building, model performance, and use flask to productionize. 
