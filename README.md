@@ -272,7 +272,7 @@ plt.xlabel("Days of the Week");
 plt.ylabel("Delay in minute");
 ```
 
-- Use wordclouds to show the most frequent recorded in terms of bus location and subway station.
+- Use wordclouds to show the most frequent bus location and subway station.
 
 <h5 align="center"> Wordcloud to visualize most frequent location and station ( Bus Location (Left) and Subway Station (Right) )</h5>
 <table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_location_wordcloud.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/subway_station_wordcloud.jpg' width=500></td></tr></table>
