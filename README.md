@@ -18,6 +18,7 @@
 7. [ EDA Graphs ](#EDA_Graphs)
 </details>
 
+<a name="Summary_of_Findings"></a>
 ## Summary of Findings
 *
 *
@@ -240,7 +241,7 @@ plt.imshow(wc, interpolation="bilinear")
 plt.axis('off')
 plt.show()
 ```
-
+<a name="EDA_Graphs"></a>
 ## EDA Graphs
 - Below are some of the highlights from the graphs:
 
@@ -248,12 +249,10 @@ plt.show()
 
 ![]("https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_route_num_dist.jpg")
 
-<h5 align="center"> Bar graphs for bus and subway hour  ( Bus (Left) and Subway (Right) )</h5>
+<h5 align="center"> Bar graphs for bus and subway delay by hour of the day ( Bus (Left) and Subway (Right) )</h5>
 <table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_hour_bargraph.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/subway_hour_bargraph.jpg
 ' width=500></td></tr></table>
 
--
-![alt text](")
 
 <h5 align="center"> Wordcloud to visualize most frequent location and station ( Bus Location (Left) and Subway Station (Right) )</h5>
 <table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_hour_bargraph.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/subway_hour_bargraph.jpg
