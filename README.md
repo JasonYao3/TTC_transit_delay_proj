@@ -14,8 +14,7 @@
 3. [ Data Collection ](#Data_Collection)
 4. [ Data Merging ](#Data_Merging)
 5. [ Data Cleaning ](#Data_Cleaning)
-6. [ EDA Code ](#EDA_Code)
-7. [ EDA Graphs ](#EDA_Graphs)
+6. [ EDA ](#EDA)
 </details>
 
 <a name="Summary_of_Findings"></a>
@@ -177,8 +176,8 @@ bus_df['direction_simp'] = bus_df['Direction'].apply(direction_simplifier)
 ```
 </details>
 
-<a name="EDA_Code"></a>
-## EDA Code
+<a name="EDA"></a>
+## EDA
 In the 3.Bus EDA and 4.Subway EDA IPython files. 
 
 -  I looked at the distributions of the continuous variables using seaborn graphs(distplot and boxplot)
