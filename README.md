@@ -1,8 +1,16 @@
-# TTC Bus and Subway Delay Data Analysis: Project Overview
-* Performed extensive data analysis on TTC bus and subway delays to see what caused delay and when it happened. 
+# TTC Bus and Subway Delay Data Analysis
+
+## Project Overview
+* Performed extensive data analysis on TTC bus and subway delays to see what caused delays, when and where they happened the most. 
 * Merged and cleaned 46 excels files, for over 600k records of transit delays from City of Toronto.
 * Engineered variables features from each column.
 * Explored datasets to analyze relationships among features (both continuous and categorical).
+
+### Have you experienced this before?
+<img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/UofT_news.jpg' width="500" height="300">
+
+Image Source: [ U of T news ](https://www.utoronto.ca/news/how-transit-authorities-can-better-respond-subway-disruptions-u-t-researchers)
+
 
 ## Table of Contents
 <details open>
@@ -19,17 +27,38 @@
 
 <a name="Summary_of_Findings"></a>
 ## Summary of Findings
-*
-*
+
+### Bus
+* 2014-01-07 has 600 bus delays in one day, out of all days from 2014 to 2020, when normally 135 to 240 delays in one day.
+* January has most delays out of all months.
+* 29 dufferin is the bus route that is most frequent to be behind schedule, followed by 52 Lawrence and 32 Eglinton West.
+* Most bus delays are within 2 to 16 minutes long.
+* Most bus delays occured at 6AM and 3PM, but 4AM to 5AM and 8PM have the longest delay time.
+* Weekdays have more delays than weekends, however, weekends bus delay are 5 to 10 minutes longer than weekdays.
+* Number one incident caused delays is mechanical which takes roughly 10 minutes long, but diversion takes the longest, 160 minutes.
+* Buses going west are most likely to be behind schedule and they take the longest time.
+* Finch, Kennedy, Warden, Downsview and STC stations are the most frequent bus delay location.
+* Worst scenario is buses going west on saturday would be behind schedule by 55 minutes.
+
+### Subway
+* 2014-02-05 has 100 delays in one day.
+* 90% of the delays are less than 10 minutes
+* 8AM is the most requent time of delays and 5AM takes the longest time.
+* Weekdays have more delays than weekends, but saturday is the longest delay time.
+* Subways going west bound have the most number of delays, but subways going north takes the longest.
+* 90% of delays happened on the Bloor-Danforth and Yonge-University lines, only 10% happened on Sheppard and Scarborough lines, but delays on the Scarborough line takes roughly 3 times longer than the other lines.
+* Top three subway delays are due to issues around speed control, operator overspeeding and injured or ill customer in station.
+* Top 5 delays are in Kennedy, Kipling, Bloor Yonge, Finch and Sheppard West stations.
+* 3 out of the 4 subway interchange in top 10 stations, Kennedy, Bloor Yonge and Sheppard Yonge have the most frequent delay. 
+* 7 out of the top 10 stations are associated to Bloor Yonge line.
 
 <a name="Introduction"></a>
 ## Introduction
-
 As a student who went to Ryerson University, I had to commute almost every week on TTC buses and subways. During my riderships, I had experienced countless number of delays on both buses and subwayes, whether they were long delays (on a shuttle bus) or short delays. Now, I think it would be interesting to dive into the delay data and try to find interesting insights out of it.
 
 <a name="Data_Collection"></a>
 ## Data Collection
-I downloaded the data from the [City of Toronto’s Open Data Portal](https://open.toronto.ca/). There are two sets of data for the two different transportations from January 1, 2014 to May 31, 2020.
+I downloaded the raw data from the [City of Toronto’s Open Data Portal](https://open.toronto.ca/). There are two sets of data for the two different transportations from January 1, 2014 to May 31, 2020.
 The TTC bus dataset has 7 excel files with 12 excel worksheets for each month from 2014 to 2019 and 5 excel worksheets for each month in 2020.
 The TTC subway dataset has 39 excel files for each month from 2014 to 2020.
 
@@ -37,11 +66,11 @@ In the dataset, each row is a record of the delay-causing incident and we have t
 *  Report date
 *  Route Number (The number of the bus route)
 *  Time of the day	
-*  Day	
+*  Day (Day of the week)
 *  Location	/ Station (The location or station of the delay-causing incident)
 *  Incident (The description of the delay-causing incident)
 *  Delay (in minute)	
-*  Min Gap (in minute)
+*  Gap (in minute)
 *  Direction / Bound (where the vehicle heading)
 *  Vehicle (vehicle number)
 *  Code	(TTC delay code)
@@ -75,7 +104,10 @@ def merge_excel(transit):
 
 <a name="Data_Cleaning"></a>
 ## Data Cleaning
-In the 2.Data cleaning Python file, I needed to clean it up the two merged excel files so that they are usable for our analysis. I made the following changes and created the following variables:
+In the 2.Data cleaning Python file, I needed to clean it up the two merged excel files so that they are usable for our analysis. I made the following changes and created the following variables.
+After cleaning:
+* the bus dataset has roughly 461000 rows and 18 columns 
+* the subway dataset has roughly 113000 rows and 18 columns 
 
 Parsed date into year, month and date and time into hour and minute.
 
