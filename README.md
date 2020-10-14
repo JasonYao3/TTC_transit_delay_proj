@@ -6,7 +6,7 @@
 
 ## Table of Contents
 <details open>
-<summary>Show/Hide (Double click on the content)</summary>
+<summary>Show/Hide</summary>
 <br>
 
 1. [ Summary of Findings ](#Summary_of_Findings)
@@ -23,9 +23,11 @@
 *
 *
 
+<a name="Introduction"></a>
 ## Introduction
 * As a student who went to Ryerson University, I had to commute almost every week on TTC buses and subways. During my riderships, I had experienced countless number of delays on both buses and subwayes, whether they were long delays (on a shuttle bus) or short delays. Now, I think it would be interesting to dive into the delay data and try to find interesting insights out of it.
 
+<a name="Data_Collection"></a>
 ## Data Collection
 * I downloaded the data from the [City of Toronto’s Open Data Portal](https://open.toronto.ca/). There are two sets of data for the two different transportations from January 1, 2014 to May 31, 2020.
 * The TTC bus dataset has 7 excel files with 12 excel worksheets for each month from 2014 to 2019 and 5 excel worksheets for each month in 2020.
@@ -44,6 +46,7 @@
 *  Code	(TTC delay code)
 *  Line (TTC subway Line)
 
+<a name="Data_Merging"></a>
 ## Data Merging
 In the 1.Merge_excel IPython file, I merged all excel files for each transit into two separate excel files using the following merge excel function.
 ```
@@ -62,6 +65,7 @@ def merge_excel(transit):
             df_total = df_total.append(df)
     return df_total
 ```
+<a name="Data_Cleaning"></a>
 ## Data Cleaning
 In the 2.Data cleaning Python file, I needed to clean it up the two merged excel files so that they are usable for our analysis. I made the following changes and created the following variables:
 
@@ -144,7 +148,7 @@ def direction_simplifier(direction):
         'NaN'
 bus_df['direction_simp'] = bus_df['Direction'].apply(direction_simplifier)
 ```
-
+<a name="EDA_Code"></a>
 ## EDA Code
 In the 3.Bus EDA and 4.Subway EDA IPython files. 
 * I looked at the distributions of the continuous variables using seaborn graphs (distplot and boxplot), their correlations using heatmaps and their statistical measures (quantiles, Interquartile range and outliers) using numpy quantiles function.
