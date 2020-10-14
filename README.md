@@ -25,15 +25,16 @@
 
 <a name="Introduction"></a>
 ## Introduction
-* As a student who went to Ryerson University, I had to commute almost every week on TTC buses and subways. During my riderships, I had experienced countless number of delays on both buses and subwayes, whether they were long delays (on a shuttle bus) or short delays. Now, I think it would be interesting to dive into the delay data and try to find interesting insights out of it.
+
+As a student who went to Ryerson University, I had to commute almost every week on TTC buses and subways. During my riderships, I had experienced countless number of delays on both buses and subwayes, whether they were long delays (on a shuttle bus) or short delays. Now, I think it would be interesting to dive into the delay data and try to find interesting insights out of it.
 
 <a name="Data_Collection"></a>
 ## Data Collection
-* I downloaded the data from the [City of Toronto’s Open Data Portal](https://open.toronto.ca/). There are two sets of data for the two different transportations from January 1, 2014 to May 31, 2020.
-* The TTC bus dataset has 7 excel files with 12 excel worksheets for each month from 2014 to 2019 and 5 excel worksheets for each month in 2020.
-* The TTC subway dataset has 39 excel files for each month from 2014 to 2020.
-* In the dataset, each row is a record to the delay-causing incident and we have the following information:
-*	 Report date
+- I downloaded the data from the [City of Toronto’s Open Data Portal](https://open.toronto.ca/). There are two sets of data for the two different transportations from January 1, 2014 to May 31, 2020.
+- The TTC bus dataset has 7 excel files with 12 excel worksheets for each month from 2014 to 2019 and 5 excel worksheets for each month in 2020.
+- The TTC subway dataset has 39 excel files for each month from 2014 to 2020.
+- In the dataset, each row is a record to the delay-causing incident and we have the following information:
+*  Report date
 *  Route Number (The number of the bus route)
 *  Time of the day	
 *  Day	
@@ -49,7 +50,6 @@
 <a name="Data_Merging"></a>
 ## Data Merging
 In the 1.Merge_excel IPython file, I merged all excel files for each transit into two separate excel files using the following merge excel function.
-
 
 <details open>
 <summary>Show/Hide</summary>
@@ -77,7 +77,7 @@ def merge_excel(transit):
 ## Data Cleaning
 In the 2.Data cleaning Python file, I needed to clean it up the two merged excel files so that they are usable for our analysis. I made the following changes and created the following variables:
 
-*	Parsed date into year, month and date and time into hour and minute.
+Parsed date into year, month and date and time into hour and minute.
 <details open>
 <summary>Show/Hide</summary>
 <br>
@@ -89,7 +89,7 @@ bus_df['day'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[2]))
 ```
 </details>
 
-*	Removed route numbers that are not bus route numbers. According to [TTC ROUTES IN NUMERICAL ORDER: ALL TIME LISTING](https://transittoronto.ca/bus/8108.shtml)
+Removed route numbers that are not bus route numbers. According to [TTC ROUTES IN NUMERICAL ORDER: ALL TIME LISTING](https://transittoronto.ca/bus/8108.shtml)
 <details open>
 <summary>Show/Hide</summary>
 <br>
@@ -100,7 +100,7 @@ bus_df = bus_df.loc[(bus_df['Route'] >= 5) & (bus_df['Route'] <= 999)]
 ```
 </details>
 
-*	Converted time from 12 hour to 24 hour.
+Converted time from 12 hour to 24 hour.
 <details open>
 <summary>Show/Hide</summary>
 <br>
@@ -114,7 +114,7 @@ bus_df['hour'] = bus_df['Time'].apply(convert_to_24hour)
 ```
 </details>
 
-* Cleaned up location and station.
+Cleaned up location and station.
 <details open>
 <summary>Show/Hide</summary>
 <br>
@@ -125,7 +125,8 @@ bus_df['Location'] = bus_df['Location'].replace(to_replace='STC', value='SCARBOR
 bus_df['Location'] = bus_df['Location'].replace(to_replace='STN', value='STATION',regex=True)
 ```
 </details>
-*	Removed empty delay rows.
+
+Removed empty delay rows.
 <details open>
 <summary>Show/Hide</summary>
 <br>
@@ -134,7 +135,8 @@ bus_df['Location'] = bus_df['Location'].replace(to_replace='STN', value='STATION
 bus_df = bus_df[bus_df['Min Delay'].notna()]
 ```
 </details>
-* Made a new column for whether transit delayed at station or not
+
+Made a new column for whether transit delayed at station or not
 <details open>
 <summary>Show/Hide</summary>
 <br>
@@ -144,7 +146,8 @@ bus_df['at_station'] = bus_df['Location'].apply(lambda x: 1 if 'STATION' in str(
 ```
 </details>
 
-* Removed duplicate columns and fill in NULL values for delay and gap columns.
+Removed duplicate columns and fill in NULL values for delay and gap columns.
+
 <details open>
 <summary>Show/Hide</summary>
 <br>
@@ -157,7 +160,8 @@ bus_df.drop(columns=[' Min Delay', 'Delay','Gap'], inplace=True)
 ```
 </details>
 
-* Added a new column to categorize different delay type by how long it is.
+Added a new column to categorize different delay type by how long it is.
+
 <details open>
 <summary>Show/Hide</summary>
 <br>
@@ -175,7 +179,8 @@ def delay_type(col):
  bus_df['delay_type'] = bus_df['Min Delay'].apply(delay_type)
 ```
 </details>
-* Standardized transits direction and subway line column.
+Standardized transits direction and subway line column.
+
 <details open>
 <summary>Show/Hide</summary>
 <br>
@@ -203,7 +208,9 @@ bus_df['direction_simp'] = bus_df['Direction'].apply(direction_simplifier)
 <a name="EDA_Code"></a>
 ## EDA Code
 In the 3.Bus EDA and 4.Subway EDA IPython files. 
-* I looked at the distributions of the continuous variables using seaborn graphs (distplot and boxplot), their correlations using heatmaps and their statistical measures (quantiles, Interquartile range and outliers) using numpy quantiles function.
+
+I looked at the distributions of the continuous variables using seaborn graphs (distplot and boxplot), their correlations using heatmaps and their statistical measures (quantiles, Interquartile range and outliers) using numpy quantiles function.
+
 <details open>
 <summary>Show/Hide</summary>
 <br>
@@ -248,7 +255,8 @@ compute_quantiles(bus_date_counts)
 ```
 </details>
 
-* I looked at the value counts for the various categorical variables using seaborn barplots and countplots for top code, subway station, bus location and bus route.
+I looked at the value counts for the various categorical variables using seaborn barplots and countplots for top code, subway station, bus location and bus route.
+
 <details open>
 <summary>Show/Hide</summary>
 <br>
@@ -271,7 +279,8 @@ for col in bus_cat.columns:
 ```
 </details>
 
-* I used barplots to show the relationship between delays vs day of the week, incident, hour, direction, subway lines.
+I used barplots to show the relationship between delays vs day of the week, incident, hour, direction, subway lines.
+
 <details open>
 <summary>Show/Hide</summary>
 <br>
@@ -285,7 +294,8 @@ plt.ylabel("Delay in minute");
 ```
 </details>
 
-* I used wordclouds to show the most frequent recorded in terms of bus location and subway station.
+I used wordclouds to show the most frequent recorded in terms of bus location and subway station.
+
 <details open>
 <summary>Show/Hide</summary>
 <br>
@@ -323,9 +333,9 @@ plt.show()
 ## EDA Graphs
 - Below are some of the highlights from the graphs:
 
-<h5 align="center"> Distribution plot and box plot of the bus route num</h5>
+Distribution plot and box plot of the bus route num
 
- ![]("https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_route_num_dist.jpg")
+![]("https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_route_num_dist.jpg")
 
 <h5 align="center"> Bar graphs for bus and subway delay by hour of the day ( Bus (Left) and Subway (Right) )</h5>
 <table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_hour_bargraph.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/subway_hour_bargraph.jpg' width=500></td></tr></table>
