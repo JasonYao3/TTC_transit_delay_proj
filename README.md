@@ -55,7 +55,7 @@ Image Source: [ U of T news ](https://www.utoronto.ca/news/how-transit-authoriti
 
 <a name="Introduction"></a>
 ## Introduction
-As a student who went to Ryerson University, I had to commute almost every week on TTC buses and subways. During my riderships, I had experienced countless number of delays on both buses and subwayes, whether they were long delays (on a shuttle bus) or short delays (emergence alarm activated). Now that I'm graduated, I think it would be interesting to dive into the delay data and try to find interesting insights out of something I used to be so familar with but overlooked at. 
+As a student who used to go to Ryerson University, I had to commute for hours almost every week on TTC buses and subways. I had experienced countless number of delays on both buses and subways, whether they were long delays (on a shuttle bus) or short delays (random emergence alarm activated). Now that I have graduated, I think it would be interesting to dive into the delay data and try to find interesting insights out of something I used to be so familar with yet overlooked at. 
 
 <a name="Data_Collection"></a>
 ## Data Collection
