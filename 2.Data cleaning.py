@@ -319,7 +319,7 @@ subway_df = trim(subway_df)
 # 2.3.11 rename columns
 subway_df = subway_df.rename(columns = {'Date':'exact_date', 'Time':'exact_time','Day':'day_of_week','Station':'station','Code':'code','Bound':'bound','Line':'line','Vehicle':'vehicle', 'Min Delay': 'delay_min', 'Min Gap':'gap_min'})
 
-# 2.5 Save to csv
+# 2.4 Save to csv
 # save both dataframes to 2 new csv files
 bus_df.to_csv('./data/bus_cleaned.csv',index = False)
 subway_df.to_csv('./data/subway_cleaned.csv',index = False)
