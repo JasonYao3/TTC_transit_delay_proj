@@ -1,16 +1,13 @@
 # TTC Bus and Subway Delay Data Analysis: Project Overview
-* 
-* Merged 46 excels files from City of Toronto using python
-* Engineered features from the text of each ...
-* Explored datasets to analyze relationships among features (both continuous and categorical)
-* Optimized Linear, Lasso, and Random Forest Regressors using GridsearchCV to reach the best model. 
-* Built a client facing API using flask 
+* Performed extensive data analysis on TTC bus and subway delays to see what caused delay and when it happened. 
+* Merged and cleaned 46 excels files, over 600k of transit delays from City of Toronto.
+* Engineered variablesfeatures from the text of each column.
+* Explored datasets to analyze relationships among features (both continuous and categorical).
 
-## Code and Resources Used 
-**Python Version:** 3.7  
-**Packages:** pandas, numpy, matplotlib, seaborn 
-**Data Source:**  https://open.toronto.ca/
-**Ken Jee:** https://github.com/PlayingNumbers/ds_salary_proj
+## Summary of Findings
+*
+*
+
 
 ## Intro
 * As a student who went to Ryerson University, I had to commute alot on the TTC buses and subways every week. During my riderships, I had experienced countless numbers of delays on both bus and subway, whether they were long or short delays. Now, I think it would be interesting to dive into the delay data and try to find out interesting insights.
@@ -62,20 +59,9 @@ Below are a few highlights from the graphs.
 ![alt text](")
 ![alt text](")
 
-## Model Building 
- 
-I tried three different models:
-*	**Multiple Linear Regression** – Baseline for the model
-*	**Lasso Regression** – Because of the sparse data from the many categorical variables, I thought a normalized regression like lasso would be effective.
-*	**Random Forest** – Again, with the sparsity associated with the data, I thought that this would be a good fit. 
-
-## Model performance
-The Random Forest model far outperformed the other approaches on the test and validation sets. 
-*	**Random Forest** : MAE =
-*	**Linear Regression**: MAE = 
-*	**Ridge Regression**: MAE = 
-
-## Productionization 
-In this step, I built a flask API endpoint that was hosted on a local webserver by following along with the TDS tutorial in the reference section above. The API endpoint takes in a request with a list of values from a job listing and returns an estimated salary. 
+## What Next?
+Model Building 
+Model performance
+Productionization 
 
 
