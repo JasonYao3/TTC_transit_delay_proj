@@ -49,6 +49,12 @@
 <a name="Data_Merging"></a>
 ## Data Merging
 In the 1.Merge_excel IPython file, I merged all excel files for each transit into two separate excel files using the following merge excel function.
+
+
+<details open>
+<summary>Show/Hide</summary>
+<br>
+    
 ```
 # This function merges all excel files and return a dataframe
 def merge_excel(transit):
@@ -65,24 +71,39 @@ def merge_excel(transit):
             df_total = df_total.append(df)
     return df_total
 ```
+</details>
+
 <a name="Data_Cleaning"></a>
 ## Data Cleaning
 In the 2.Data cleaning Python file, I needed to clean it up the two merged excel files so that they are usable for our analysis. I made the following changes and created the following variables:
 
 *	Parsed date into year, month and date and time into hour and minute.
+<details open>
+<summary>Show/Hide</summary>
+<br>
 ```
 bus_df['year'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[0]))
 bus_df['month'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[1]))
 bus_df['day'] = bus_df['Report Date'].apply(lambda x: int(x.split('-')[2]))
 ```
+</details>
 
 *	Removed route numbers that are not bus route numbers. According to [TTC ROUTES IN NUMERICAL ORDER: ALL TIME LISTING](https://transittoronto.ca/bus/8108.shtml)
+<details open>
+<summary>Show/Hide</summary>
+<br>
+    
 ```
 bus_df = bus_df[~((bus_df['Route'] >= 600) & (bus_df['Route'] <900))]
 bus_df = bus_df.loc[(bus_df['Route'] >= 5) & (bus_df['Route'] <= 999)]
 ```
+</details>
 
 *	Converted time from 12 hour to 24 hour.
+<details open>
+<summary>Show/Hide</summary>
+<br>
+    
 ```
 def convert_to_24hour(col):
     in_time = datetime.strptime(col,'%I:%M:%S %p')
@@ -90,32 +111,56 @@ def convert_to_24hour(col):
     return out_time
 bus_df['hour'] = bus_df['Time'].apply(convert_to_24hour)
 ```
+</details>
 
 * Cleaned up location and station.
+<details open>
+<summary>Show/Hide</summary>
+<br>
+    
 ```
 bus_df['Location'] = bus_df['Location'].str.upper().str.replace(rf'[{punctuation}]', '')
 bus_df['Location'] = bus_df['Location'].replace(to_replace='STC', value='SCARBOROUGH TOWN CENTRE')
 bus_df['Location'] = bus_df['Location'].replace(to_replace='STN', value='STATION',regex=True)
 ```
-
+</details>
 *	Removed empty delay rows.
+<details open>
+<summary>Show/Hide</summary>
+<br>
+    
 ```
 bus_df = bus_df[bus_df['Min Delay'].notna()]
 ```
+</details>
 * Made a new column for whether transit delayed at station or not
+<details open>
+<summary>Show/Hide</summary>
+<br>
+    
 ```
 bus_df['at_station'] = bus_df['Location'].apply(lambda x: 1 if 'STATION' in str(x) else 0)
 ```
+</details>
 
 * Removed duplicate columns and fill in NULL values for delay and gap columns.
+<details open>
+<summary>Show/Hide</summary>
+<br>
+    
 ```
 bus_df['Min Delay'].fillna(bus_df[' Min Delay'], inplace=True)
 bus_df['Min Delay'].fillna(bus_df['Delay'], inplace=True)
 bus_df['Min Gap'].fillna(bus_df['Gap'], inplace=True)
 bus_df.drop(columns=[' Min Delay', 'Delay','Gap'], inplace=True)
 ```
+</details>
 
 * Added a new column to categorize different delay type by how long it is.
+<details open>
+<summary>Show/Hide</summary>
+<br>
+    
 ```
 def delay_type(col):
     if col >= 1 and col <= 10:
@@ -128,8 +173,12 @@ def delay_type(col):
         return 'on time'
  bus_df['delay_type'] = bus_df['Min Delay'].apply(delay_type)
 ```
-
+</details>
 * Standardized transits direction and subway line column.
+<details open>
+<summary>Show/Hide</summary>
+<br>
+    
 ```
 def direction_simplifier(direction):
     # convert all lowercase characters to uppercase, replace punctuations with empty space and remove leading and the trailing spaces.
@@ -148,10 +197,16 @@ def direction_simplifier(direction):
         'NaN'
 bus_df['direction_simp'] = bus_df['Direction'].apply(direction_simplifier)
 ```
+</details>
+
 <a name="EDA_Code"></a>
 ## EDA Code
 In the 3.Bus EDA and 4.Subway EDA IPython files. 
 * I looked at the distributions of the continuous variables using seaborn graphs (distplot and boxplot), their correlations using heatmaps and their statistical measures (quantiles, Interquartile range and outliers) using numpy quantiles function.
+<details open>
+<summary>Show/Hide</summary>
+<br>
+    
 ```
 # initialize continuous variables
 bus_cont = bus_df[['route_num','vehicle','year','month','day','hour','min','delay_min','gap_min']]
@@ -190,7 +245,13 @@ def compute_quantiles(col_counts):
     print('Maximum occurence is %d of %s.' %(col_counts.max(), col_counts.index[0]))
 compute_quantiles(bus_date_counts)
 ```
+</details>
+
 * I looked at the value counts for the various categorical variables using seaborn barplots and countplots for top code, subway station, bus location and bus route.
+<details open>
+<summary>Show/Hide</summary>
+<br>
+    
 ```
 # dataframe for categorical variables
 bus_cat = bus_df[['year','month','day','hour','day_of_week', 'incident', 'at_station', 'direction_simp', 'delay_type']]
@@ -207,8 +268,13 @@ for col in bus_cat.columns:
     plt.title("Graph for %s" %(col))
     plt.show()
 ```
+</details>
 
 * I used barplots to show the relationship between delays vs day of the week, incident, hour, direction, subway lines.
+<details open>
+<summary>Show/Hide</summary>
+<br>
+    
 ```
 plt.figure(figsize=(12,5));
 sns.barplot(x='day_of_week', y='delay_min', data= bus_df, ci=None);
@@ -216,8 +282,13 @@ plt.title("Delays vs Day of the Week");
 plt.xlabel("Days of the Week");
 plt.ylabel("Delay in minute");
 ```
+</details>
 
 * I used wordclouds to show the most frequent recorded in terms of bus location and subway station.
+<details open>
+<summary>Show/Hide</summary>
+<br>
+    
 ```
 # Code is from Ken Jee
 words = " ".join(bus_df_notna['location'])
@@ -245,13 +316,14 @@ plt.imshow(wc, interpolation="bilinear")
 plt.axis('off')
 plt.show()
 ```
+</details>
 <a name="EDA_Graphs"></a>
 ## EDA Graphs
 - Below are some of the highlights from the graphs:
 
 <h5 align="center"> Distribution plot and box plot of the bus route num</h5>
 
-![]("https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_route_num_dist.jpg")
+ ![]("https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_route_num_dist.jpg")
 
 <h5 align="center"> Bar graphs for bus and subway delay by hour of the day ( Bus (Left) and Subway (Right) )</h5>
 <table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_hour_bargraph.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/subway_hour_bargraph.jpg' width=500></td></tr></table>
