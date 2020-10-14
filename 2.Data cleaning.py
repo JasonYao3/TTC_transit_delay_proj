@@ -1,4 +1,4 @@
-da# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Created on Mon Sep 28 12:20:11 2020
 
@@ -41,7 +41,7 @@ bus_df = bus_df[~((bus_df['Route'] >= 600) & (bus_df['Route'] <900))]
 bus_df = bus_df.loc[(bus_df['Route'] >= 5) & (bus_df['Route'] <= 999)]
 
 # 2.2.4 Time
-# break down by hour and min.
+# break down time by hour and min.
 # function to convert 12 hour AM/PM to 24 hour clock.
 def convert_to_24hour(col):
     in_time = datetime.strptime(col,'%I:%M:%S %p')
@@ -54,7 +54,7 @@ bus_df['hour'] = bus_df['Time'].apply(convert_to_24hour)
 bus_df['min'] = bus_df['Time'].apply(lambda x: int(x.split(':')[1]))
 
 # 2.2.5 Location
-
+# Clean up the location column
 # replace punctuations with empty space
 bus_df['Location'] = bus_df['Location'].str.upper().str.replace(rf'[{punctuation}]', '')
 # rename STC to SCARBOROUGH TOWN CENTRE
@@ -67,7 +67,7 @@ bus_df['at_station'] = bus_df['Location'].apply(lambda x: 1 if 'STATION' in str(
 
 # 2.2.6 Min Delay
 # All Min Delay and Delay columns mean the same thing, they are named different.
-# They could be merged into one Min Delay column where the NaN rows and the non NaN rows combine together
+# They could be merged into one Min Delay column where the NaN rows and the non NaN rows combine together.
 
 bus_df['Min Delay'].fillna(bus_df[' Min Delay'], inplace=True)
 bus_df['Min Delay'].fillna(bus_df['Delay'], inplace=True)
@@ -151,32 +151,30 @@ def trim(dataset):
 
 bus_df = trim(bus_df)
 
-# 2.2.12 Rename columns
+# 2.2.12 Make all column names lowercase so thet are easier to work with.
 bus_df = bus_df.rename(columns = {'Report Date':'exact_date', 'Route':'route_num', 'Time':'exact_time','Day':'day_of_week','Location':'location', 'Incident':'incident','Direction':'direction',
                                   'Vehicle':'vehicle','Min Delay': 'delay_min', 'Min Gap':'gap_min' })
 
-
-
-# 2.4 Cleaning Subway dataset
+# 2.3 Cleaning Subway dataset
 # The columns in this dataset are: Date, Time, Day, Station, Code, Min Delay, Min Gap, Bound, Line, Vehicle
 
-# 2.4.1 Missing Value
+# 2.3.1 Missing Value
 missing_vals_subway = subway_df.isnull().sum() / subway_df.shape[0]
 missing_vals_subway[missing_vals_subway > 0].sort_values(ascending=False)
 
-# 2.4.2 Date
+# 2.3.2 Date
 subway_df['year'] = subway_df['Date'].apply(lambda x: int(x.split('-')[0]))
 subway_df['month'] = subway_df['Date'].apply(lambda x: int(x.split('-')[1]))
 subway_df['day'] = subway_df['Date'].apply(lambda x: int(x.split('-')[2]))
 
-# 2.4.3 Time
+# 2.3.3 Time
 subway_df['hour'] = subway_df['Time'].apply(convert_to_24hour)
 subway_df['min'] = subway_df['Time'].apply(lambda x: int(x.split(':')[1]))
 
 # sort subway data by Date and Time
 subway_df.sort_values(['Date','Time'], inplace=True)
 
-# 2.4.4 Station
+# 2.3.4 Station
 # a list of station
 station_list = ['BATHURST',
 'BAY',
@@ -262,10 +260,12 @@ station_list_comb = '|'.join(station_list)
 # remove rows from the subway dataset if they don't contain any stations from the station list
 subway_df = subway_df[subway_df['Station'].str.contains(station_list_comb)]
 
+# Station column clean up
 subway_df['Station'] = subway_df['Station'].replace(to_replace='STN', value='STATION',regex=True)
 subway_df['Station'] = subway_df['Station'].apply(lambda x: x.split('(')[0] if '(' in x else x)
 subway_df['Station'] = subway_df['Station'].str.replace(rf'[{punctuation}]', '')
-# Standard interchange stops
+
+# Renaming to standard interchange stops
 subway_df['Station'] = subway_df['Station'].replace(to_replace='YONGE BD STATION', value='BLOOR YONGE STATION')
 subway_df['Station'] = subway_df['Station'].replace(to_replace='BLOOR STATION', value='BLOOR YONGE STATION')
 subway_df['Station'] = subway_df['Station'].replace(to_replace='SPADINA BD STATION', value='SPADINA STATION')
@@ -276,16 +276,16 @@ subway_df['Station'] = subway_df['Station'].replace(to_replace='YONGE SHP STATIO
 subway_df['Station'] = subway_df['Station'].replace(to_replace='SHEPPARD STATION', value='SHEPPARD YONGE STATION')
 
 
-# 2.4.5 at_station
+# 2.3.5 at_station
 # if a subway train is delayed at a station
 subway_df['at_station'] = subway_df['Station'].apply(lambda x: 1 if 'STATION' in x else 0)
 # at interchange station
 
-# 2.4.6 Bound
+# 2.3.6 Bound
 # In this case, bound is direction.
 subway_df.Bound = subway_df.Bound.replace({'Y':np.nan,'5':np.nan,'R':np.nan})
 
-# 2.4.7 Line
+# 2.3.7 Line
 # function to simplify subway lines
 def line_simplifier(line):
     line = str(line).upper().replace(rf'[{punctuation}]', '').strip()
@@ -306,20 +306,20 @@ subway_df['line_simp'] = subway_df['Line'].apply(line_simplifier)
 subway_df.line_simp = subway_df.line_simp.replace({'YU-BD':np.nan})
 subway_df['line_simp'].value_counts()
 
-# 2.4.8 Min Delay
+# 2.3.8 Min Delay
 # drop null values
 subway_df = subway_df[subway_df['Min Delay'].notna()]
 
-# 2.4.9 categorize delay
+# 2.3.9 categorize delay into on-time, short, medium and long
 subway_df['delay_type'] = subway_df['Min Delay'].apply(delay_type)
 
-# 2.4.10 trim dataset
+# 2.3.10 trim dataset
 subway_df = trim(subway_df)
 
-# 2.4.11 rename columns
+# 2.3.11 rename columns
 subway_df = subway_df.rename(columns = {'Date':'exact_date', 'Time':'exact_time','Day':'day_of_week','Station':'station','Code':'code','Bound':'bound','Line':'line','Vehicle':'vehicle', 'Min Delay': 'delay_min', 'Min Gap':'gap_min'})
 
 # 2.5 Save to csv
-# save all dataframes to 2 new csv files
+# save both dataframes to 2 new csv files
 bus_df.to_csv('./data/bus_cleaned.csv',index = False)
 subway_df.to_csv('./data/subway_cleaned.csv',index = False)
