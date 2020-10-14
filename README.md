@@ -23,6 +23,7 @@ Image Source: [ U of T news ](https://www.utoronto.ca/news/how-transit-authoriti
 4. [ Data Merging ](#Data_Merging)
 5. [ Data Cleaning ](#Data_Cleaning)
 6. [ EDA ](#EDA)
+7. [ Reference](#Reference)
 </details>
 
 <a name="Summary_of_Findings"></a>
@@ -336,7 +337,18 @@ plt.axis('off')
 plt.show()
 ```
 
+<a name="Reference"></a>
+## Reference
+- Data Source: https://open.toronto.ca/catalogue/?search=ttc&sort=score%20desc
+- https://github.com/PlayingNumbers/ds_salary_proj
+- https://github.com/awesomeahi95/Hotel_Review_NLP
+- https://ionnoant.github.io/2018-04-28_TTC-post-2/#
+- https://www.lowandhigh.xyz/magazine/2019/2/7/dont-be-so-quick-to-blame-the-ttc-for-delays-on-the-subway#:~:text=Miscellaneous%20speed%20control%20is%20when,control%20to%20reset%20and%20proceed.
+- https://www.kaggle.com/allunia/don-t-turn-into-a-smoothie-after-the-shake-up
+
 ### What Next?
 Model building, model performance, and use flask to productionize. 
+
+
 
 
