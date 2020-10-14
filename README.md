@@ -3,7 +3,7 @@
 ## Project Overview
 * Performed extensive data analysis on TTC bus and subway delays to see what caused delays, when and where they happened the most. 
 * Merged and cleaned 46 excels files of raw data from City of Toronto.
-* Engineered variables features from each column.
+* Engineered variables features for columns.
 * Explored over 600k records of transit delays to analyze relationships among features (both continuous and categorical).
 
 ### Have you experienced this before?
