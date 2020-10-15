@@ -175,7 +175,7 @@ subway_df['min'] = subway_df['Time'].apply(lambda x: int(x.split(':')[1]))
 # sort subway data by Date and Time
 subway_df.sort_values(['Date','Time'], inplace=True)
 
-# 2.3.4 Station 
+# 2.3.4 Station
 # From 608 different inputs to 75 stations
 # this function is to clean up the station column
 def clean_station_col(text):
@@ -206,9 +206,6 @@ def clean_station_col(text):
     return text
 
 subway_df['Station'] = subway_df['Station'].apply(clean_station_col)
-
-subway_df['Station'] = subway_df['Station'].apply(clean_station_col)
-
 
 # a list of station
 station_list = ['BATHURST',
@@ -301,10 +298,10 @@ subway_df = subway_df[subway_df['Station'].str.contains(station_list_comb)]
 #print(station_list_comb)
 
 # remove noisy station names where they have less than 10 delays
-# only removed 1% of data 
+# only removed 1% of data
 subway_df = subway_df[subway_df.groupby(['Station'])['Date'].transform('count') > 10]
 
-# clean up station column for specific 
+# clean up station column for specific
 subway_df['Station'] = subway_df['Station'].replace(dict.fromkeys(['BLOOR STATION','YONGE STATION'],'BLOOR YONGE STATION'))
 subway_df['Station'] = subway_df['Station'].replace(dict.fromkeys(['SHEPPARDYONGE STATION','SHEPPARD STATION','SHEPPARD-YONGE STATION','YONGE SHEP STATION','YONGE SHP STATION'],'SHEPPARD YONGE STATION'),regex=True)
 
