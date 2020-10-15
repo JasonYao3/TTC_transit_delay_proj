@@ -5,5 +5,9 @@ test.ipynb
 bus_streetcar_incident_id_april2019.txt
 all EDA.ipynb
 Model building.py
+<<<<<<< HEAD
 raw_data/
 list_of_subway_station.xlsx
+=======
+raw_data/
+>>>>>>> master
