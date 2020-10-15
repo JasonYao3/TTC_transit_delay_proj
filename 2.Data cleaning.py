@@ -12,6 +12,7 @@ import pandas as pd
 import numpy as np
 from string import punctuation
 from datetime import datetime
+import re
 
 bus_df = pd.read_csv('./data/merged_bus.csv', encoding='Latin-1')
 subway_df = pd.read_csv('./data/merged_subway.csv', encoding='Latin-1')
@@ -174,7 +175,38 @@ subway_df['min'] = subway_df['Time'].apply(lambda x: int(x.split(':')[1]))
 # sort subway data by Date and Time
 subway_df.sort_values(['Date','Time'], inplace=True)
 
-# 2.3.4 Station
+# 2.3.4 Station 
+# From 608 different inputs to 75 stations
+# this function is to clean up the station column
+def clean_station_col(text):
+    text = re.sub(rf'[{punctuation}]', '',text) # Remove punctuation
+    text = re.sub('\s+(BD|SRT|YUS|YU)+\s',' ',text) # Remove BD, SRT,YU,YUS
+    text = re.sub('CTR','CENTRE',text) # Replace ctr with centre
+    text = re.sub('(SATATIO|STAITON|STATI|CAR HOUSE|STN|STATIO|YARD|WYE|HOSTLER|CARHOUSE|SHOP|SHOPS|LOWER|COMMERCE|HOSTLE)+$',' STATION',text) # Replace texts not end with station to station
+    # split by (, TO, AND and only the words before them
+    text = text.split('(')[0]
+    text = text.split(' TO ')[0]
+    text = text.split(' AND ')[0]
+    if 'YONGEUNIVERSITY' in text or 'YONGE UNIVERSITY' in text:
+        text = 'YONGE UNIVERSITY LINE'
+    if  not text.endswith('LINE') and not text.endswith('SUBWAY') and 'STATION' not in text:
+        text = text + ' STATION'
+    if 'SCARB' in text:
+        text = 'SCARBOROUGH CENTRE STATION'
+    if 'DAVISVILLE' in text:
+        text = 'DAVISVILLE STATION'
+    if 'GREENWOOD' in text:
+        text = 'GREENWOOD STATION'
+    if 'KEELE' in text:
+        text = 'KEELE STATION'
+    if 'MCCOWAN' in text:
+        text = 'MCCOWAN STATION'
+    if 'WILSON' in text:
+        text = 'WILSON STATION'
+    return text
+
+subway_df['Station'] = subway_df['Station'].apply(clean_station_col)
+
 # a list of station
 station_list = ['BATHURST',
 'BAY',
@@ -204,7 +236,6 @@ station_list = ['BATHURST',
 'GREENWOOD',
 'HIGH PARK',
 'HIGHWAY 407',
-'HWY 407'
 'ISLINGTON',
 'JANE',
 'KEELE',
@@ -236,14 +267,15 @@ station_list = ['BATHURST',
 'SHEPPARD',
 'SHERBOURNE',
 'SPADINA',
-'ST. CLAIR',
-'ST. CLAIR WEST',
-'ST. ANDREW',
-'ST. GEORGE',
-'ST. PATRICK',
+'ST CLAIR',
+'ST CLAIR WEST',
+'ST ANDREW',
+'ST GEORGE',
+'ST PATRICK',
 'SUMMERHILL',
 'UNION',
 'VAUGHAN METRO CENTRE',
+'VAUGHAN MC',
 'VICTORIA PARK',
 'WARDEN',
 'WELLESLEY',
@@ -253,29 +285,25 @@ station_list = ['BATHURST',
 'YORK UNIVERSITY',
 'YORKDALE',
 'YONGE',
+'QUEENS PARK',
+'SCAR',
+'SHP',
+'NORTH YORK CTR'
 ]
 
 # create regex pattern out of the list of words
 station_list_comb = '|'.join(station_list)
 # remove rows from the subway dataset if they don't contain any stations from the station list
 subway_df = subway_df[subway_df['Station'].str.contains(station_list_comb)]
+#print(station_list_comb)
 
-# Station column clean up
-subway_df['Station'] = subway_df['Station'].replace(to_replace='STN', value='STATION',regex=True)
-subway_df['Station'] = subway_df['Station'].apply(lambda x: x.split('(')[0] if '(' in x else x)
-subway_df['Station'] = subway_df['Station'].str.replace(rf'[{punctuation}]', '')
-subway_df['Station'] = subway_df['Station'].apply(lambda x: x.split('TO')[0] + 'STATION' if 'TO ' in x and 'EGLINTON' not in x else x)
+# remove noisy station names where they have less than 10 delays
+# only removed 1% of data 
+subway_df = subway_df[subway_df.groupby(['Station'])['Date'].transform('count') > 10]
 
-# Renaming to standard interchange stops
-subway_df['Station'] = subway_df['Station'].replace(to_replace='YONGE BD STATION', value='BLOOR YONGE STATION')
-subway_df['Station'] = subway_df['Station'].replace(to_replace='BLOOR STATION', value='BLOOR YONGE STATION')
-subway_df['Station'] = subway_df['Station'].replace(to_replace='SPADINA BD STATION', value='SPADINA STATION')
-subway_df['Station'] = subway_df['Station'].replace(to_replace='SPADINA YUS STATION', value='SPADINA STATION')
-subway_df['Station'] = subway_df['Station'].replace(to_replace='KENNEDY BD STATION', value='KENNEDY STATION')
-subway_df['Station'] = subway_df['Station'].replace(to_replace='KENNEDY SRT STATION', value='KENNEDY STATION')
-subway_df['Station'] = subway_df['Station'].replace(to_replace='YONGE SHP STATION', value='SHEPPARD YONGE STATION')
-subway_df['Station'] = subway_df['Station'].replace(to_replace='SHEPPARD STATION', value='SHEPPARD YONGE STATION')
-
+# clean up station column for specific 
+subway_df['Station'] = subway_df['Station'].replace(dict.fromkeys(['BLOOR STATION','YONGE STATION'],'BLOOR YONGE STATION'))
+subway_df['Station'] = subway_df['Station'].replace(dict.fromkeys(['SHEPPARDYONGE STATION','SHEPPARD STATION','SHEPPARD-YONGE STATION','YONGE SHEP STATION','YONGE SHP STATION'],'SHEPPARD YONGE STATION'),regex=True)
 
 # 2.3.5 at_station
 # if a subway train is delayed at a station
@@ -324,3 +352,4 @@ subway_df = subway_df.rename(columns = {'Date':'exact_date', 'Time':'exact_time'
 # save both dataframes to 2 new csv files
 bus_df.to_csv('./data/bus_cleaned.csv',index = False)
 subway_df.to_csv('./data/subway_cleaned.csv',index = False)
+
