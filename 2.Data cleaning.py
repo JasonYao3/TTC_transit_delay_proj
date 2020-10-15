@@ -264,6 +264,7 @@ subway_df = subway_df[subway_df['Station'].str.contains(station_list_comb)]
 subway_df['Station'] = subway_df['Station'].replace(to_replace='STN', value='STATION',regex=True)
 subway_df['Station'] = subway_df['Station'].apply(lambda x: x.split('(')[0] if '(' in x else x)
 subway_df['Station'] = subway_df['Station'].str.replace(rf'[{punctuation}]', '')
+subway_df['Station'] = subway_df['Station'].apply(lambda x: x.split('TO')[0] + 'STATION' if 'TO ' in x and 'EGLINTON' not in x else x)
 
 # Renaming to standard interchange stops
 subway_df['Station'] = subway_df['Station'].replace(to_replace='YONGE BD STATION', value='BLOOR YONGE STATION')
