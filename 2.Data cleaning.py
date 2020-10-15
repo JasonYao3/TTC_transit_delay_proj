@@ -207,12 +207,9 @@ def clean_station_col(text):
 
 subway_df['Station'] = subway_df['Station'].apply(clean_station_col)
 
-<<<<<<< HEAD
 subway_df['Station'] = subway_df['Station'].apply(clean_station_col)
 
 
-=======
->>>>>>> master
 # a list of station
 station_list = ['BATHURST',
 'BAY',
@@ -358,7 +355,3 @@ subway_df = subway_df.rename(columns = {'Date':'exact_date', 'Time':'exact_time'
 # save both dataframes to 2 new csv files
 bus_df.to_csv('./data/bus_cleaned.csv',index = False)
 subway_df.to_csv('./data/subway_cleaned.csv',index = False)
-<<<<<<< HEAD
-=======
-
->>>>>>> master
