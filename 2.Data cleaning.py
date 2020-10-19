@@ -175,7 +175,7 @@ subway_df['min'] = subway_df['Time'].apply(lambda x: int(x.split(':')[1]))
 # sort subway data by Date and Time
 subway_df.sort_values(['Date','Time'], inplace=True)
 
-# 2.3.4 Station
+# 2.3.4 Station - inconsistency of data entry
 # From 608 different inputs to 75 stations
 # this function is to clean up the station column
 def clean_station_col(text):
