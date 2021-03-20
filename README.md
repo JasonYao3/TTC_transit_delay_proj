@@ -2,7 +2,7 @@
 
 ## Project Overview
 * Performed extensive data analysis on TTC bus and subway delays to see what caused delays, when and where they happened the most. 
-* Merged and cleaned 46 excels files of raw data from City of Toronto.
+* Merged and cleaned 50 excels files of raw data from City of Toronto.
 * Engineered variables features from date, time, delay columns to extract features. 
 * Explored over 600k records of transit delays to analyze relationships among features (both continuous and categorical).
 
@@ -59,9 +59,9 @@ As a student who used to go to Ryerson University, I had to commute for hours al
 
 <a name="Data_Collection"></a>
 ## Data Collection
-I downloaded the raw data from the [City of Toronto’s Open Data Portal](https://open.toronto.ca/). There are two sets of data for the two different transportations from January 1, 2014 to May 31, 2020.
-The TTC bus dataset has 7 excel files with 12 excel worksheets for each month from 2014 to 2019 and 5 excel worksheets for each month in 2020.
-The TTC subway dataset has 39 excel files for each month from 2014 to 2020.
+I downloaded the raw data from the [City of Toronto’s Open Data Portal](https://open.toronto.ca/). There are two sets of data for two different transportations from January 1, 2014 to August 15, 2020 and October 31, 2020 for bus and subway respectively.
+The TTC bus dataset has 7 excel files with 12 excel worksheets for each month from 2014 to 2019 and 8 excel worksheets for each month in 2020.
+The TTC subway dataset has 43 excel files for each month from 2014 to 2020.
 
 In the dataset, each row is a record of the delay-causing incident and we have the following information:
 *  Report date
