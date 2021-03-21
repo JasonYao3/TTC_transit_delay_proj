@@ -30,28 +30,37 @@ Image Source: [ U of T news ](https://www.utoronto.ca/news/how-transit-authoriti
 ## Summary of Findings
 
 ### Bus
-* 2014-01-07 has 600 bus delays in one day, out of all days from 2014 to 2020, when normally 135 to 240 delays in one day.
-* January has most delays out of all months.
+* 5% of the bus dataset recorded did not cause any delay.
+* 2014-01-07 has 600 bus delays in one day, out of all days from 2014 to 2020, when normally 125 to 230 delays in one day.
 * 29 dufferin is the bus route that is most frequent to be behind schedule, followed by 52 Lawrence and 32 Eglinton West.
-* Most bus delays are within 2 to 16 minutes long.
+* 2014 has most delays out of all years with 90374 records.
+* January has most delays out of all months with 41873 records.
+* Day 12 has most delays out of all days in a month with 15398 records.
+* 6 AM has the most recorded delays with 47331 records and the most hours have between 7361 to 26625 records of delays. 
+* Most bus delays are within 2 to 17 minutes long and 10 minutes being the most frequent one with 67630 records.
 * Most bus delays occured at 6AM and 3PM, but 4AM to 5AM and 8PM have the longest delay time.
 * Weekdays have more delays than weekends, however, weekends bus delay are 5 to 10 minutes longer than weekdays.
-* Number one incident caused delays is mechanical which takes roughly 10 minutes long, but diversion takes the longest, 160 minutes.
+* Number one incident that causes delays is mechanical which takes roughly 10 minutes long, but diversion takes the longest, 160 minutes.
 * Buses going west are most likely to be behind schedule and they take the longest time.
-* Finch, Kennedy, Warden, Downsview and STC stations are the most frequent bus delay location.
-* Worst scenario is buses going west on saturday would be behind schedule by 55 minutes.
+* Finch, Kennedy, Warden, STC and Downsview stations are the most frequent bus delay location.
+* Worst scenario is buses going west on saturday could be delay for 60 minutes.
 
 ### Subway
-* 2014-02-05 has 100 delays in one day which is the most out of all other days.
-* 90% of the delays are less than 10 minutes.
-* 8AM is the most requent time of delays and 5AM takes the longest time.
-* Weekdays have more delays than weekends, but saturday is the longest delay time.
-* Subways going west bound have the most number of delays, but subways going north takes the longest.
-* 90% of delays happened on the Bloor-Danforth and Yonge-University lines, only 10% happened on Sheppard and Scarborough lines, but delays on the Scarborough line takes roughly 3 times longer than the other lines.
-* Top three subway delays are due to issues around speed control, operator overspeeding and injured or ill customer in station.
-* Top 5 delays are in Kennedy, Kipling, Bloor Yonge, Finch and Sheppard West stations.
+* Only 32% of the subway dataset is the actual delay, which means the delay time is at least 1 minute.
+* 2020-04-02 has 58 delays in one day which is the most out of all other days.
+* 5:55:00AM is the most requent time of delays with 119 records.
+* 2018 has the most occurence of delays out of all years with 7145 records. 
+* January has the most occurence of delays out of all months with 3914 records. 
+* 8 AM has the most occurence of delays out of all months with 3048 records. 
+* Most delays are 3 minutes long with 14333 records.
+* Weekdays have more delays than weekends, but saturday has the longest delay time.
+* Subways going south bound have the most number of delays, but subways going north takes the longest.
+* Most delays happened on the Bloor-Danforth and Yonge-University lines, but delays on the Scarborough line take roughly 2 to 3 minutes longer than the other lines.
+* Most subway delays are due to issues around disorderly patron, injured or ill customer on train and passenger assistance alarm activated in station.
+* Top 7 out of 10 delays occured in either a terminal station or an interchange station. 
 * 3 out of the 4 subway interchange in top 10 stations, Kennedy, Bloor Yonge and Sheppard Yonge have the most frequent delay. 
 * 7 out of the top 10 stations are associated to Bloor Yonge line.
+* 4 AM has the longest delay by 25 minute.
 
 <a name="Introduction"></a>
 ## Introduction
@@ -107,8 +116,8 @@ def merge_excel(transit):
 ## Data Cleaning
 In the 2.Data cleaning Python file, I needed to clean it up the two merged excel files so that they are usable for our analysis. I made the following changes and created the following variables.
 After cleaning:
-* the bus dataset has roughly 461000 rows and 18 columns 
-* the subway dataset has roughly 113000 rows and 18 columns 
+* the bus dataset has roughly 466000 rows and 18 columns 
+* the subway dataset has roughly 133000 rows and 18 columns 
 
 Parsed date into year, month and date and time into hour and minute.
 
@@ -178,8 +187,6 @@ def delay_type(col):
         return 'medium'
     elif col > 30:
         return 'long'
-    elif col == 0:
-        return 'on time'
  bus_df['delay_type'] = bus_df['Min Delay'].apply(delay_type)
 ```
 </details>
@@ -219,8 +226,8 @@ In the 3.Bus EDA and 4.Subway EDA IPython files.
 <table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_delay_min_dist.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/subway_delay_min_dist.jpg' width=500></td></tr></table>
 
 - Both graphs have many outliers.
-- The bus graph on the left has 456000 outliers and 10 minutes delay has 67000 records.
-- The subway graph on the right has 113000 outliers and 0 minute delay has 78000 records.
+- The bus graph on the left has 437747 outliers and 10 minutes delay has 67630 records.
+- The subway graph on the right has 41561 outliers and 3 minute delay has 14333 records.
     
 ```
 # initialize continuous variables
@@ -310,7 +317,6 @@ plt.ylabel("Delay in minute");
 <table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/bus_location_wordcloud.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/subway_station_wordcloud.jpg' width=500></td></tr></table>
 
 ```
-# Code is from Ken Jee
 words = " ".join(bus_df_notna['location'])
 
 def punctuation_stop(text):
