@@ -79,6 +79,9 @@ bus_df['Min Delay'] = bus_df['Min Delay'].apply(lambda x: np.abs(x))
 # Remove Min delay rows if there's no record of it.
 bus_df = bus_df[bus_df['Min Delay'].notna()]
 
+# Remove delays recorded as 0 
+bus_df = bus_df[bus_df['Min Delay'] > 1] # 23341 rows removed
+
 # 2.2.7 Delay type
 # create a function to categorize delay time.
 # on time is 0 mins delays
@@ -92,8 +95,6 @@ def delay_type(col):
         return 'medium'
     elif col > 30:
         return 'long'
-    elif col == 0:
-        return 'on time'
 
 # apply delay_type function
 bus_df['delay_type'] = bus_df['Min Delay'].apply(delay_type)
@@ -338,6 +339,9 @@ subway_df['line_simp'].value_counts()
 # 2.3.8 Min Delay
 # drop null values
 subway_df = subway_df[subway_df['Min Delay'].notna()]
+
+# Delays recorded as 0 
+subway_no_delay = subway_df[subway_df['Min Delay'] > 1] #91100 rows removed
 
 # 2.3.9 categorize delay into on-time, short, medium and long
 subway_df['delay_type'] = subway_df['Min Delay'].apply(delay_type)
