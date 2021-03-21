@@ -30,39 +30,31 @@ Image Source: [ U of T news ](https://www.utoronto.ca/news/how-transit-authoriti
 ## Summary of Findings
 
 ### Bus
-* 5% of the bus dataset recorded did not cause any delay.
-* 2014-01-07 has 600 bus delays in one day, out of all days from 2014 to 2020, when normally 125 to 230 delays in one day.
-* 29 dufferin is the bus route that is most frequent to be behind schedule, followed by 52 Lawrence and 32 Eglinton West.
-* 2014 has most delays out of all years with 90374 records.
-* January has most delays out of all months with 41873 records.
-* Day 12 has most delays out of all days in a month with 15398 records.
-* 6 AM has the most recorded delays with 47331 records and the most hours have between 7361 to 26625 records of delays. 
+* Most bus delays occured around 6 AM and 3PM. 4AM, 5AM and 8PM have the longest delay time.
 * Most bus delays are within 2 to 17 minutes long and 10 minutes being the most frequent one with 67630 records.
-* Most bus delays occured at 6AM and 3PM, but 4AM to 5AM and 8PM have the longest delay time.
-* Weekdays have more delays than weekends, however, weekends bus delay are 5 to 10 minutes longer than weekdays.
-* Number one incident that causes delays is mechanical which takes roughly 10 minutes long, but diversion takes the longest, 160 minutes.
+* 29 dufferin is the bus route that is most frequent to be behind schedule, followed by 52 Lawrence and 32 Eglinton West.
+* Number one incident that causes delays is mechanical which takes roughly 10 minutes long, but diversion last the longest, 160 minutes.
 * Buses going west are most likely to be behind schedule and they take the longest time.
+* Weekdays have more delays than weekends, however, on weekends bus delay are 5 to 10 minutes longer than weekdays.
+* 2014-01-07 has 600 bus delays in one day, out of all days from 2014 to 2020, when normally 125 to 230 delays occur in one day.
+* 2014 has most delays out of all years with 90374 of records.
+* January has most delays out of all months with 41873 of records.
+* Day 12 has most delays out of all days in a month with 15398 of records.
 * Finch, Kennedy, Warden, STC and Downsview stations are the most frequent bus delay location.
-* Worst scenario is buses going west on saturday could be delay for 60 minutes.
 
 ### Subway
-* Only 32% of the subway dataset is the actual delay, which means the delay time is at least 1 minute.
-* 2020-04-02 has 58 delays in one day which is the most out of all other days.
-* 5:55:00AM is the most requent time of delays with 119 records.
-* 2018 has the most occurence of delays out of all years with 7145 records. 
-* January has the most occurence of delays out of all months with 3914 records. 
-* 8 AM has the most occurence of delays out of all months with 3048 records. 
-* Most delays are 3 minutes long with 14333 records.
-* Weekdays have more delays than weekends, but saturday has the longest delay time.
-* Subways going south bound have the most number of delays, but subways going north takes the longest.
+* Around 8 AM has the most occurence of delays out of all hours with 3048 of records and around 4 AM has the longest delay last about 25 minute.
+* Most delays are 3 minutes long with 14333 of records.
 * Most delays happened on the Bloor-Danforth and Yonge-University lines, but delays on the Scarborough line take roughly 2 to 3 minutes longer than the other lines.
 * Most subway delays are due to issues around disorderly patron, injured or ill customer on train and passenger assistance alarm activated in station.
-* Top 7 out of 10 delays occured in either a terminal station or an interchange station. 
-* 3 out of the 4 subway interchange in top 10 stations, Kennedy, Bloor Yonge and Sheppard Yonge have the most frequent delay. 
-* 7 out of the top 10 stations are associated to Bloor Yonge line.
-* 4 AM has the longest delay by 25 minute.
+* 7 out of top 10 delay in station occured in either a terminal station or an interchange station. 
+* Subways going south bound have the most number of delays, but subways going north takes the longest.
+* Weekdays have more delays than weekends, but saturday has the longest delay time.
+* 2020-04-02 has 58 delays in one day which is the most out of all other days.
+* 2018 has the most occurence of delays out of all years with 7145 records. 
+* January has the most occurence of delays out of all months with 3914 records. 
 
-<h5 align="center"> Top 20 delays by bus route number (left) | Top 10 delays by subway station (right) )</h5>
+<h5 align="center"> Top 20 delays by bus route number (left) | Top 10 delays by subway station (right) </h5>
 <table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/top%2020%20delays%20by%20bus%20route%20number.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/top%2010%20delays%20by%20subway%20station.jpg' width=500></td></tr></table>
 
 <a name="Introduction"></a>
@@ -118,6 +110,7 @@ def merge_excel(transit):
 <a name="Data_Cleaning"></a>
 ## Data Cleaning
 In the 2.Data cleaning Python file, I needed to clean it up the two merged excel files so that they are usable for our analysis. I made the following changes and created the following variables.
+
 After cleaning:
 * the bus dataset has roughly 466000 rows and 18 columns 
 * the subway dataset has roughly 133000 rows and 18 columns 
@@ -222,7 +215,8 @@ bus_df['direction_simp'] = bus_df['Direction'].apply(direction_simplifier)
 <a name="EDA"></a>
 ## EDA
 In the 3.Bus EDA and 4.Subway EDA IPython files. 
-
+* Only 32% of the subway dataset is the actual delay, which means the delay time is at least 1 minute.
+* 5% of the bus dataset recorded did not cause any delay.
 -  I looked at the distributions of the continuous variables using seaborn graphs(distplot and boxplot)
 
 <h5 align="center"> Distribution plot and box plot of delay for bus and subway ( Bus (Left) and Subway (Right) )</h5>
@@ -234,7 +228,7 @@ In the 3.Bus EDA and 4.Subway EDA IPython files.
     
 ```
 # initialize continuous variables
-bus_cont = bus_df[['route_num','vehicle','year','month','day','hour','min','delay_min','gap_min']]
+bus_cont = actual_delay[['route_num','vehicle','year','month','day','hour','min','delay_min','gap_min']]
 # Using a for loop to plot each continous variables and compute quantiles.
 for col in bus_cont.columns:
     fig, ax = plt.subplots(1,2, figsize=(12,5))
@@ -286,7 +280,7 @@ compute_quantiles(bus_date_counts)
     
 ```
 # dataframe for categorical variables
-bus_cat = bus_df[['year','month','day','hour','day_of_week', 'incident', 'at_station', 'direction_simp', 'delay_type']]
+bus_cat = actual_delay[['year','month','day','hour','day_of_week', 'incident', 'at_station', 'direction_simp', 'delay_type']]
 
 # Using a for loop to plot each categorical variable.
 for col in bus_cat.columns:
@@ -308,7 +302,7 @@ for col in bus_cat.columns:
 
 ```
 plt.figure(figsize=(12,5));
-sns.barplot(x='day_of_week', y='delay_min', data= bus_df, ci=None);
+sns.barplot(x='day_of_week', y='delay_min', data= actual_delay, ci=None);
 plt.title("Delays vs Day of the Week");
 plt.xlabel("Days of the Week");
 plt.ylabel("Delay in minute");
