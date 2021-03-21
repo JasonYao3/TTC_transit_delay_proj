@@ -30,7 +30,7 @@ Image Source: [ U of T news ](https://www.utoronto.ca/news/how-transit-authoriti
 ## Summary of Findings
 
 ### Bus
-* Most bus delays occured around 6 AM and 3PM. Around 4AM, 5AM and 8PM have the longest delay time.
+* 20% of bus delays occured around 6 AM and 3PM. Around 4AM, 5AM and 8PM have the longest delay time.
 * Most bus delays are within 2 to 17 minutes long and 10 minutes being the most frequent one with 67630 records.
 * 29 dufferin is the bus route that is most frequent to be behind schedule, followed by 52 Lawrence and 32 Eglinton West.
 * Number one incident that causes delays is mechanical which takes roughly 10 minutes long, but diversion last the longest, 160 minutes.
@@ -43,7 +43,7 @@ Image Source: [ U of T news ](https://www.utoronto.ca/news/how-transit-authoriti
 * Finch, Kennedy, Warden, STC and Downsview stations are the most frequent bus delay location.
 
 ### Subway
-* Around 8 AM has the most occurence of delays out of all hours with 3048 of records and around 4 AM has the longest delay last about 25 minute.
+* 8 AM has the most occurence of delays out of all hours with 7%, and around 4 AM has the longest delay last about 25 minute.
 * Most delays are 3 minutes long with 14333 of records.
 * Most delays happened on the Bloor-Danforth and Yonge-University lines, but delays on the Scarborough line take roughly 2 to 3 minutes longer than the other lines.
 * Most subway delays are due to issues around disorderly patron, injured or ill customer on train and passenger assistance alarm activated in station.
@@ -59,7 +59,7 @@ Image Source: [ U of T news ](https://www.utoronto.ca/news/how-transit-authoriti
 
 <a name="Introduction"></a>
 ## Introduction
-As a student who used to go to Ryerson University, I had to commute for hours almost every week on TTC buses and subways. I had experienced countless number of delays on both buses and subways, whether they were long delays (on a shuttle bus) or short delays (random emergence alarm activated). Now that I have graduated, I think it would be interesting to dive into the delay data and try to find interesting insights out of something I used to be so familar with yet overlooked at. 
+As a student who used to go to Ryerson University, I had to commute for hours almost every week on TTC buses and subways. I had experienced countless number of delays on both buses and subways, whether they were long delays (on a shuttle bus) or short delays (random emergence alarm activated). Now that I have graduated, I think it would be interesting to dive into the delay data and try to find interesting insights out of something I used to be so familar with, yet overlooked at. 
 
 <a name="Data_Collection"></a>
 ## Data Collection
