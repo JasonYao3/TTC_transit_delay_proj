@@ -301,7 +301,7 @@ for col in bus_cat.columns:
 - Use barplots to show the relationship between delays vs day of the week, incident, hour, direction, subway lines.
 
 <h5 align="center"> Delays by Days of the Week and Subway Lines (Bus Direction) ( Bus Direction(Left) and Subway Lines (Right) )</h5>
-<table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/Delays%20vs%20Days%20of%20the%20Week%20and%20Direction.JPG' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/Delays%20by%20Days%20of%20the%20Week%20and%20Subway%20Lines.JPG' width=500></td></tr></table>
+<table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/Delays%20vs%20Days%20of%20the%20Week%20and%20Direction%20for%20bus.JPG' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/Delays%20by%20Days%20of%20the%20Week%20and%20Subway%20Lines.JPG' width=500></td></tr></table>
 
 ```
 plt.figure(figsize=(12,5));
