@@ -30,7 +30,7 @@ Image Source: [ U of T news ](https://www.utoronto.ca/news/how-transit-authoriti
 ## Summary of Findings
 
 ### Bus
-* Most bus delays occured around 6 AM and 3PM. 4AM, 5AM and 8PM have the longest delay time.
+* Most bus delays occured around 6 AM and 3PM. Around 4AM, 5AM and 8PM have the longest delay time.
 * Most bus delays are within 2 to 17 minutes long and 10 minutes being the most frequent one with 67630 records.
 * 29 dufferin is the bus route that is most frequent to be behind schedule, followed by 52 Lawrence and 32 Eglinton West.
 * Number one incident that causes delays is mechanical which takes roughly 10 minutes long, but diversion last the longest, 160 minutes.
