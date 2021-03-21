@@ -62,6 +62,9 @@ Image Source: [ U of T news ](https://www.utoronto.ca/news/how-transit-authoriti
 * 7 out of the top 10 stations are associated to Bloor Yonge line.
 * 4 AM has the longest delay by 25 minute.
 
+<h5 align="center"> Top 20 delays by bus route number (left) | Top 10 delays by subway station (right) )</h5>
+<table><tr><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/top%2020%20delays%20by%20bus%20route%20number.jpg' width=500></td><td><img src='https://github.com/JasonYao3/TTC_transit_delay_proj/blob/master/pictures/top%2010%20delays%20by%20subway%20station.jpg' width=500></td></tr></table>
+
 <a name="Introduction"></a>
 ## Introduction
 As a student who used to go to Ryerson University, I had to commute for hours almost every week on TTC buses and subways. I had experienced countless number of delays on both buses and subways, whether they were long delays (on a shuttle bus) or short delays (random emergence alarm activated). Now that I have graduated, I think it would be interesting to dive into the delay data and try to find interesting insights out of something I used to be so familar with yet overlooked at. 
